@@ -1,0 +1,105 @@
+@use '../abstracts/' as *;
+
+$whiteColor: #fff;
+$redColor: create-color-map(#dc2626);
+.footer {
+    @each $i, $color in $redColor {
+        --red-color-#{$i}: #{$color};
+    }
+
+    &__main {
+        .section__inner {
+            padding-bottom: 5em;
+        }
+
+        background: var(--gray-color-500);
+
+        .section__inner {
+            display: flex;
+            justify-content: center;
+            padding-top: 1em;
+        }
+    }
+
+    &__contact-form {
+        width: to-rem(752);
+        background: rgb($whiteColor, 0.6);
+        border-radius: to-rem(5);
+        padding: to-rem(20) to-rem(40) to-rem(40) to-rem(40);
+
+        .contact-form {
+            &__header {
+                border-bottom: 1px solid $whiteColor;
+                padding: to-rem(14);
+                margin-bottom: .75em;
+            }
+
+            &__main {
+                border-bottom: 1px solid $whiteColor;
+                padding: to-rem(14);
+                margin-bottom: .75em;
+                display: flex;
+                flex-direction: column;
+
+                input,
+                textarea {
+                    border-radius: to-rem(5);
+                }
+            }
+
+            &__group-top {
+                display: flex;
+                flex-direction: row;
+                gap: 2em;
+
+                .contact-form__form-group {
+                    width: 30%;
+                }
+            }
+
+            &__title {
+                font-size: 1.17em;
+                color: var(--secondary-color-500);
+                text-wrap: pretty;
+                text-align: center;
+            }
+
+            &__sub-title {
+                font-size: .75em;
+                color: var(--secondary-color-300);
+                text-wrap: pretty;
+                text-align: center;
+            }
+
+            &__footer {
+                display: flex;
+                justify-content: center;
+
+                button {
+                    margin: 0;
+                    background: var(--primary-color-400);
+                    padding: to-rem(5) to-rem(60);
+                }
+            }
+        }
+
+        .form-required {
+            color: var(--red-color-500);
+        }
+
+    }
+
+    &__bottom {
+        background: var(--tertiary-color-500);
+        padding-block: 3em;
+
+        p.copyright__text {
+            color: rgb($whiteColor, 0.6);
+            text-align: center;
+
+            a {
+                color: rgb($whiteColor, 0.8);
+            }
+        }
+    }
+}

@@ -1,0 +1,46 @@
+@use "sass:color";
+@use "sass:map";
+/**
+ * * Function to generate color shades.
+ *
+ * ? This function takes a base color and a step value as parameters and returns a color shade based on the step value.
+ * ? If the step value is positive, the function darkens the color by multiplying the step value with 5.
+ * ? If the step value is negative, the function lightens the color by multiplying the absolute value of the step with 10.
+ *
+ * @param {Color} $color - The base color.
+ * @param {Number} $step - The step value.
+ * @return {Color} - The generated color shade.
+ */
+@function generate-shades($color, $step) {
+  @return color.scale($color, $lightness: $step * -15%);
+}
+
+/**
+ * * Function to create a color map.
+ *
+ * ? This function takes a base color as a parameter and generates a color map with shades of the base color.
+ * ? The color map is created by iterating over a range of values from 1 to 9 and calling the generate-shades function for each value.
+ * ? The generated shades are then merged into the color map using the map-merge function.
+ *
+ * @param {Color} $color - The base color.
+ * @return {Map} - The color map with shades of the base color.
+ */
+ @function create-color-map($color){
+  $color-map: (50: color.scale($color, $lightness: 85%));
+  @for $i from 1 through 9 {
+    $shade: $i * 100;
+    $color-map: map.merge($color-map, ($shade: generate-shades($color, $i - 5)));
+  }
+  $color-map: map.merge($color-map, (950: color.scale($color, $lightness: -85%)));
+  @return $color-map;
+}
+
+/**
+ * * Converts pixels to rems.
+ *
+ * @param {number} $px - The value in pixels.
+ * @return {number} The converted value in rems.
+ */
+@function to-rem($px) {
+  @return calc($px / 16) * 1rem;
+}

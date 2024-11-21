@@ -1,0 +1,115 @@
+@use 'sass:map';
+@use 'variables' as *;
+
+/**
+ * * Mixin for creating a flex container with customizable properties.
+ *
+ * @param {string} $direction - The flex direction. Defaults to 'row'.
+ * @param {string} $justify - The flex justify content. Defaults to 'flex-start'.
+ * @param {string} $align - The flex align items. Defaults to 'flex-start'.
+ * @param {string} $wrap - The flex wrap. Defaults to 'nowrap'.
+ * @param {number} $colGap - The column gap. Defaults to 0.
+ * @param {number} $rowGap - The row gap. Defaults to 0.
+ *
+ * ? @example Usage:
+ * ?  .container {
+ * ?    @include d-flex(row, flex-start, flex-start, nowrap, 10px, 20px);
+ * ?  }
+ */
+@mixin d-flex($direction: row, $justify: flex-start, $align: flex-start, $wrap: nowrap, $colGap: 0, $rowGap: 0) {
+  & {
+    display: flex;
+    flex-flow: $direction $wrap;
+    justify-content: $justify;
+    align-items: $align;
+    @if $rowGap == 0 {
+      gap: $colGap $colGap;
+    } @else {
+      gap: $rowGap $colGap;
+    }
+  }
+}
+
+/**
+ * * @mixin container-query
+ * * @description A mixin for creating container queries.
+ * 
+ * @param {String} $containerName - The name of the container.
+ * @param {String} $breakpoint - The breakpoint value.
+ * @param {String} $condition - The condition for the container query. Default value is 'lt'.
+ * 
+ * @returns {CSS} The container query styles.
+ */
+@mixin container-query($containerName, $breakpoint, $condition: lt) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @if $condition == lt {
+      @container #{$containerName} ( width <= #{map.get($breakpoints, $breakpoint)} ) {
+        @content;
+      }
+    } @else {
+      @container #{$containerName} ( width > #{map.get($breakpoints, $breakpoint)} ) {
+        @content;
+      }
+    }
+  } @else {
+    @if $condition == lt {
+      @container #{$containerName} ( width <= #{$breakpoint} ) {
+        @content;
+      }
+    } @else {
+      @container #{$containerName} ( width > #{$breakpoint} ) {
+        @content;
+      }
+    }
+  }
+}
+
+/**
+ * * @mixin container-query-between
+ * * @description A mixin for creating container queries between two breakpoints.
+ * 
+ * @param {String} $containerName - The name of the container.
+ * @param {String} $minBreakpoint - The minimum breakpoint value.
+ * @param {String} $maxBreakpoint - The maximum breakpoint value.
+ * 
+ * @returns {Mixin} - The container query mixin.
+ */
+@mixin container-query-between($containerName, $minBreakpoint, $maxBreakpoint) {
+  @if map.has-key($breakpoints, $minBreakpoint) and map.has-key($breakpoints, $maxBreakpoint) {
+    @container #{$containerName} ( width > #{map.get($breakpoints, $minBreakpoint)} ) and ( width <= #{map.get($breakpoints, $maxBreakpoint)} ) {
+      @content;
+    }
+  } @else {
+    @container #{$containerName} ( width > #{$minBreakpoint} ) and ( width <= #{$maxBreakpoint} ) {
+      @content;
+    }
+  }
+}
+
+/**
+ * * Mixin for applying line clamp to a text element.
+ *
+ * @param {number} $lines - The number of lines to clamp the text to. Default is 2.
+ * @param {string} $fontSize - The font size of the text. Default is clamp(.8rem, 2vw, 1rem).
+ * @param {number} $lineHeight - The line height of the text. Default is 1.5.
+ * @param {string} $textAlign - The text alignment. Default is center.
+ *
+ * ? @example Usage:
+ * ? .my-text {
+ * ?   @include line-clamp(3, 1rem, 1.2, left);
+ * ? }
+ */
+@mixin line-clamp($lines: 2, $fontSize: clamp(0.8rem, 2vw, 1rem), $lineHeight: 1.5, $textAlign: center, $fixedHeight: false) {
+  font-size: $fontSize;
+  line-height: $lineHeight;
+  text-align: $textAlign;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: pretty;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  @if $fixedHeight {
+    height: calc($fontSize * $lineHeight * $lines);
+  }
+}

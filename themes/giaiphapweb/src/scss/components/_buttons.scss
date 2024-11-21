@@ -1,0 +1,27 @@
+@property --button-color {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: var(--secondary-color-500);
+};
+
+.gpw-button {
+  display: inline-block;
+  padding: .75rem 1.25rem;
+  transition: color 300ms, background-color 300ms;
+  font-size: 1rem;
+  text-transform: capitalize;
+  
+  &--outline {
+    --button-color: #fff;
+    border: 2px solid var(--button-color);
+    background-color: transparent;
+    color: var(--button-color);
+  
+    &:hover {
+      background-color: var(--button-color);
+      color: var(--gray-color-500);
+    }
+  }
+
+
+}

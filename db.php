@@ -1,0 +1,1 @@
+/Users/trantinh/Sites/localhost/gpweb/suitably/app/public/wp-content/plugins/query-monitor/wp-content/db.php

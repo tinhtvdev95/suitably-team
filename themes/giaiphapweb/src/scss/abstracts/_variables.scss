@@ -1,0 +1,15 @@
+@use 'functions' as *;
+
+$pcMaxWidth: to-rem(1250);
+$borderRadius: (
+  xs: .3125em,
+  sm: .5em,
+  md: 1em,
+  lg: 1.5em
+);
+$breakpoints: (
+  xs: to-rem(430),
+  sm: to-rem(550),
+  md: to-rem(850),
+  lg: to-rem(1250)
+);

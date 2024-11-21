@@ -1,0 +1,2 @@
+updraft/backup_2024-11-21-0226_suitably_4f79df92550c-others.zip filter=lfs diff=lfs merge=lfs -text
+updraft/*.zip filter=lfs diff=lfs merge=lfs -text

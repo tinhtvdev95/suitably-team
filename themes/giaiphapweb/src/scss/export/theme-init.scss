@@ -1,0 +1,71 @@
+@use '../abstracts/' as *;
+@use '../bases/reset';
+/** OVERRIDE SOME STYLES OF FLATSOME */
+:root {
+  @each $i, $color in $gpwColors {
+    --gpw-color-#{$i}: #{$color};
+  }
+  @each $i, $color in $primaryColors {
+    --primary-color-#{$i}: #{$color};
+  }
+  @each $i, $color in $secondaryColors {
+    --secondary-color-#{$i}: #{$color};
+  }
+  @each $i, $color in $tertiaryColors {
+    --tertiary-color-#{$i}: #{$color};
+  }
+  @each $i, $color in $successColors {
+    --success-color-#{$i}: #{$color};
+  }
+  @each $i, $color in $dangerColors {
+    --danger-color-#{$i}: #{$color};
+  }
+  @each $i, $color in $grayColors {
+    --gray-color-#{$i}: #{$color};
+  }
+  --pc-max-width: #{$pcMaxWidth};
+}
+html > body {
+  color: var(--gray-color-900);
+}
+
+html :is(blockquote, dl, figure, form, ol, p, pre, ul) {
+  margin-bottom: 0;
+}
+
+.row.row-main {
+  max-width: 100%;
+}
+
+div.row.row.row-collapse {
+  max-width: $pcMaxWidth;
+}
+
+div.row:is(.row-small, .row-medium, .row-large):not(.row-collapse) {
+  max-width: $pcMaxWidth;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.row.row-main .large-12.col {
+  padding: 0;
+}
+
+#content.page-wrapper {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.row section.section {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.section__inner:not(.full) {
+  max-width: $pcMaxWidth;
+  margin-inline: auto;
+  
+  @include container-query(content, lg) {
+    padding-inline: .625rem;
+  }
+}

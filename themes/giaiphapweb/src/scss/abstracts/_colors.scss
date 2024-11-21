@@ -1,0 +1,11 @@
+@use 'functions' as *;
+
+$gpwColors: create-color-map(#f7941d);
+
+$primaryColors: create-color-map(#C8BAA1);
+$secondaryColors: create-color-map(#2c3345);
+$tertiaryColors: create-color-map(#160c06);
+
+$successColors: create-color-map(#22c55e);
+$dangerColors: create-color-map(#f43f5e);
+$grayColors: create-color-map(#2a2a2a);

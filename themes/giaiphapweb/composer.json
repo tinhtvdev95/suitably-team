@@ -1,0 +1,19 @@
+{
+    "name": "asus/flatsome-child",
+    "description": "Autoload for giaiphapweb theme",
+    "type": "project",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Trung Hieu \"Jin\" Phan",
+            "email": "phantrunghieu1291@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "gpweb\\": ""
+        }
+    }
+}

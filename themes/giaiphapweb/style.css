@@ -1,0 +1,19 @@
+/*
+Theme Name: Giai Phap Web Custom Theme
+Theme URI: https://giaiphapweb.vn
+Description: A custom theme from Giai Phap Web
+Author: Hieu "Jin" Phan Trung
+Template: flatsome
+Version: 1.0.0
+Tags: ecommerce, modern, responsive, customized
+*/
+
+/*************** ADD CUSTOM CSS HERE.   ***************/
+
+
+
+/*************** ALL SCREEN CSS HERE  ***************/
+@media screen and (min-width: 550px) {}
+
+/*************** ADD TABLET AND MOBILE ONLY CSS HERE  ***************/
+@media screen and (max-width: 850px) {}

@@ -1,0 +1,57 @@
+@use '../abstracts/' as *;
+@use '../components/buttons';
+/*
+==========================
+=         Global         =
+==========================
+*/
+#content {
+  container: content / inline-size;
+}
+/*
+==========================
+=      Hero Banner       =
+==========================
+*/
+.hero-banner {
+  .section__inner {
+    position: relative;
+  }
+
+  &__bg {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__content {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: calc( (100% - var(--pc-max-width)) / 2 );
+    max-width: calc(var(--pc-max-width) * .5);
+    transform: translateY(-50%);
+    background-color: rgb(from var(--primary-color-600) r g b / .8);
+    padding: 2.5rem;
+  }
+
+  &__title, &__desc {
+    color: #fff;
+  }
+
+  &__title {
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: .1rem;
+  }
+
+  &__desc {
+    padding-block: 1.5625rem;
+    line-height: 1.5;
+  }
+
+  &__buttons {
+    padding-block: 1.25rem 0;
+    
+    @include d-flex($colGap: 1.25rem);
+  }
+}
