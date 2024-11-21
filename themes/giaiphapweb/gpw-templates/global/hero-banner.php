@@ -21,12 +21,14 @@ $button2 = $args['button_2'] ?? false;
       <h2 class="hero-banner__title"><?= esc_html($title) ?></h2>
       <div class="hero-banner__desc"><?= wp_kses_post($desc) ?></div>
       <div class="hero-banner__buttons">
-        <?php if($button1): ?>
-          <a href="<?= esc_url($button1['url']) ?>" class="gpw-button gpw-button--outline" role="button" aria-roledescription="<?= esc_attr($button1['text']) ?>"><?= esc_html($button1['text']) ?></a>
-        <?php endif; ?>
-        <?php if($button2): ?>
-          <a href="<?= esc_url($button2['url']) ?>" class="gpw-button gpw-button--outline" role="button" aria-roledescription="<?= esc_attr($button2['text']) ?>"><?= esc_html($button2['text']) ?></a>
-        <?php endif; ?>
+        <?php if($button1) {
+          $button1['type'] = 'outline';
+          get_template_part('gpw-templates/global/buttons', null, $button1);  
+        } 
+        if($button2) {
+          $button2['type'] = 'outline';
+          get_template_part('gpw-templates/global/buttons', null, $button2);
+        } ?>
       </div>
     </div>
   </div>
