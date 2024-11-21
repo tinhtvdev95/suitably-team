@@ -1,27 +1,74 @@
-@property --button-color {
-  syntax: '<color>';
+@property --button-transition-duration {
+  syntax: '<time>';
   inherits: false;
-  initial-value: var(--secondary-color-500);
-};
+  initial-value: 300ms;
+}
 
 .gpw-button {
+  position: relative;
   display: inline-block;
-  padding: .75rem 1.25rem;
-  transition: color 300ms, background-color 300ms;
+  padding: 1rem 1.875rem;
   font-size: 1rem;
+  line-height: 1;
   text-transform: capitalize;
+  text-align: center;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: color var(--button-transition-duration), background-color var(--button-transition-duration);
+
+  span {
+    position: relative;
+    z-index: 2;
+  }
   
-  &--outline {
+  &__outline {
     --button-color: #fff;
-    border: 2px solid var(--button-color);
+    border-color: var(--button-color);
     background-color: transparent;
     color: var(--button-color);
   
     &:hover {
       background-color: var(--button-color);
-      color: var(--gray-color-500);
+      color: var(--primary-color-800);
+    }
+
+    &--slide-bottom {
+      --button-color: var(--primary-color-800);
+
+      &:before {
+        position: absolute;
+        z-index: 1;
+        content: '';
+        inset: -.125rem;
+        background-color: var(--primary-color-600);
+        transform: translateY(100%);
+        transition: transform var(--button-transition-duration);
+      }
+
+      &:hover {
+        background-color: transparent;
+
+        &:before {
+          transform: translateY(0);
+        }
+      }
     }
   }
 
+  &__gradient {
+    color: #fff;
+    --gradient-color-1: var(--primary-color-200);
+    --gradient-color-2: var(--primary-color-600);
+    border-color: var(--primary-color-500);
+    background: linear-gradient(180deg, var(--gradient-color-1), var(--gradient-color-2), var(--gradient-color-1));
+    background-repeat: no-repeat;
+    background-size: 100% 200%;
+    background-position: 0% 0%;
+    transition: background-position var(--button-transition-duration);
 
+    &:hover {
+      color: #fff;
+      background-position: 0% 100%;
+    }
+  }
 }
