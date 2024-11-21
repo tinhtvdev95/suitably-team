@@ -4,11 +4,12 @@ $whiteColor: #fff;
 $redColor: create-color-map(#dc2626);
 
 .footer {
+    padding: 0 !important;
+    container: footer / inline-size;
+
     @each $i, $color in $redColor {
         --red-color-#{$i}: #{$color};
     }
-
-    padding: 0 !important;
 
     &__main {
         .section__inner {
@@ -20,15 +21,15 @@ $redColor: create-color-map(#dc2626);
         .section__inner {
             display: flex;
             justify-content: center;
-            padding-top: 1em;
+            padding-top: 1.5em;
         }
     }
 
     &__contact-form {
-        width: to-rem(752);
+        width: 100%;
         background: rgb($whiteColor, 0.6);
         border-radius: to-rem(5);
-        padding: to-rem(20) to-rem(40) to-rem(40) to-rem(40);
+        padding: to-rem(20) 1rem 1rem 1rem;
 
         .contact-form {
             &__header {
@@ -52,12 +53,8 @@ $redColor: create-color-map(#dc2626);
 
             &__group-top {
                 display: flex;
-                flex-direction: row;
+                flex-direction: column;
                 gap: 2em;
-
-                .contact-form__form-group {
-                    width: 30%;
-                }
             }
 
             &__title {
@@ -102,6 +99,26 @@ $redColor: create-color-map(#dc2626);
 
             a {
                 color: rgb($whiteColor, 0.8);
+            }
+        }
+    }
+
+    @include container-query(footer, sm, gt) {
+
+        &__contact-form {
+            width: to-rem(752);
+            padding: to-rem(20) to-rem(40) to-rem(40) to-rem(40);
+
+            .contact-form {
+                &__group-top {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 2em;
+
+                    .contact-form__form-group {
+                        width: 30%;
+                    }
+                }
             }
         }
     }

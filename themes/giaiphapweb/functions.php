@@ -13,3 +13,5 @@ if(file_exists(__DIR__ . '/vendor/autoload.php')) {
 if(class_exists('gpweb\\inc\\ThemeInit')) {
   gpweb\inc\ThemeInit::register_services();
 }
+
+include get_theme_file_path('controller/product/ProductController.php');
