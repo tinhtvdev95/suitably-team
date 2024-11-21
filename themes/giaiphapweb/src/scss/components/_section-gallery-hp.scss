@@ -1,11 +1,28 @@
 @use '../abstracts/' as *;
-$whiteColor: #fff;
 
 .gallery-logo {
+
     &__main {
-        display: flex;
-        justify-content: space-between;
-        padding: 2em 5em;
-        background: rgb($whiteColor, 0.9);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem 0;
+        padding-block: 1em;
+        background: rgba(249,248,248,0.9);
+
+        @include container-query(content, sm, gt) {
+            display: flex;
+            justify-content: space-between;
+            padding: 2rem 0;
+            background: rgba(249,248,248,0.9);
+        }
+
+        @include container-query(content, md, gt) {
+            display: flex;
+            justify-content: space-between;
+            padding: 2rem 5rem;
+            background: rgba(249,248,248,0.9);
+        }
     }
+
+   
 }
