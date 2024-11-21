@@ -16,7 +16,9 @@ get_header();
     'button_2' => [
       'text' => 'Book a consultation',
     ],
-  ]) ?>
+  ]); ?>
+  <?php get_template_part('gpw-templates/global/section-logo'); ?>
+
 </div>
 
 <?php

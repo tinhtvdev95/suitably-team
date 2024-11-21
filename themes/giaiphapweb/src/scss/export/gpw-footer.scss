@@ -2,10 +2,13 @@
 
 $whiteColor: #fff;
 $redColor: create-color-map(#dc2626);
+
 .footer {
     @each $i, $color in $redColor {
         --red-color-#{$i}: #{$color};
     }
+
+    padding: 0 !important;
 
     &__main {
         .section__inner {
