@@ -1,0 +1,93 @@
+@use '../abstracts/' as *;
+/*
+==========================
+=      Hero Banner       =
+==========================
+*/
+.hero-banner {
+  .section__inner {
+    position: relative;
+  }
+
+  &__bg {
+    position: relative;
+    z-index: 1;
+    min-height: 37.5rem;
+    display: grid;
+    
+    &-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @include container-query(content, md) {
+      &-img {
+        height: 100%;
+        width: auto;
+      }
+    }
+  }
+
+  &__content {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: calc( (100% - var(--pc-max-width)) / 2 );
+    max-width: calc(var(--pc-max-width) * .5);
+    transform: translateY(-50%);
+    background-color: rgb(from var(--primary-color-600) r g b / .8);
+    padding: 2.5rem;
+
+    @include container-query(content, lg) {
+      --content-left: 5%;
+      --content-min-width: 40.625rem;
+      left: var(--content-left);
+      width: min(var(--content-min-width), calc(100% - (var(--content-left) * 2)));
+    }
+
+    @include container-query(content, md) {
+      --content-min-width: 31.25rem;
+      --content-left: calc( (100% - var(--content-min-width)) / 2 );
+    }
+
+    @include container-query(content, sm) {
+      --content-min-width: 25rem;
+    }
+
+    @include container-query(content, xs) {
+      --content-left: 1rem;
+    }
+  }
+
+  &__title, &__desc {
+    color: #fff;
+  }
+
+  &__title {
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: .1rem;
+  }
+
+  &__desc {
+    padding-block: clamp(1.25rem, 2vw, 1.5625rem);
+    line-height: 1.5;
+  }
+
+  &__buttons {
+    padding-block: 1.25rem 0;
+    
+    @include d-flex($colGap: 1.25rem);
+
+    @include container-query(content, sm) {
+      flex-direction: column;
+      gap: .9375rem;
+
+      .gpw-button {
+        width: 100%;
+      }
+    }
+  }
+}
