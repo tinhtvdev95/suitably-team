@@ -28,25 +28,6 @@ $whiteColor: #fff;
         }
     }
 
-    &__bottom {
-        a {
-            display: block;
-            width: 100%;
-            text-align: center;
-            padding: 1rem;
-            margin-top: 1rem;
-            margin-bottom: 2rem;
-            color: $whiteColor;
-            background: var(--primary-color-400);
-            border: unset;
-        }
-
-        a:hover {
-            background: var(--primary-color-500);
-            color: $whiteColor;
-        }
-    }
-
     @include container-query(content, md, gt) {
         &__top {
             .text__title {

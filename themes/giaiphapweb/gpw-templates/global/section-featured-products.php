@@ -30,8 +30,7 @@ $dataProducts = $productController->getFeaturedProducts();
         [
           'text' => 'Explore The Whole Range',
           'url' => get_permalink(wc_get_page_id( 'shop' ) ),
-          'type' => 'outline-slide-bottom',
-          'class' => 'featured-product__item-product'
+          'type' => 'gradient',
         ]
       ); ?>
       </div>
