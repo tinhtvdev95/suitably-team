@@ -12,32 +12,17 @@ $productController = new ProductController();
 <div class="featured-product__main">
   <?php
   foreach ($args['data_product'] as $product):
-    ?>
-    <div class="featured-product__item-product">
-      <div class="item-product__inner">
-        <a href="<?= esc_url($product['link']); ?>">
-          <?= $product['image']; ?>
-        </a>
-        <a href="<?= esc_url($product['link']); ?>">
-          <p class="item-product__title">
-            <?= esc_html($product['title']) ?>
-          </p>
-        </a>
-        <p class="item-product__price">
-          <?= $product['price']; ?>
-        </p>
-        <?php get_template_part(
-          'gpw-templates/global/buttons',
-          null,
-          [
-            'text' => 'Explore & Customise',
-            'url' => $product['link'],
-            'type' => 'outline-slide-bottom',
-          ]
-        ); ?>
-      </div>
-    </div>
-    <?php
+    get_template_part(
+      'gpw-templates/woocommerce/product',
+      null,
+      [
+        'class' => 'featured-product__item-product',
+        'product-link' => $product['link'],
+        'product-image' => $product['image'],
+        'product-title' => $product['title'],
+        'product-price' => $product['price'],
+      ]
+    );
   endforeach;
   ?>
 </div>

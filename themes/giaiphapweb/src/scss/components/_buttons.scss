@@ -6,7 +6,7 @@
 
 .gpw-button {
   position: relative;
-  display: inline-block;
+  display: block;
   padding: 1rem 1.875rem;
   font-size: 1rem;
   line-height: 1;
@@ -33,7 +33,9 @@
     }
 
     &--slide-bottom {
-      --button-color: var(--primary-color-800);
+      --button-color: #000;
+      color: var(--gray-color-200);
+      border-width: 1px;
 
       &:before {
         position: absolute;
