@@ -1,5 +1,6 @@
 @use '../abstracts/' as *;
 $whiteColor: #fff;
+$darkWoodColor: #160c06;
 
 .featured-product {
     &__top {
@@ -10,6 +11,79 @@ $whiteColor: #fff;
             text-align: center;
             padding-block: 2rem;
             margin: 0;
+        }
+    }
+
+    &__item-product {
+        width: 100%;
+    }
+
+    &__main {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+
+        .gpw-button {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            font-size: to-rem(13);
+            border: 1px solid $darkWoodColor;
+            color: var(--gray-color-200);
+            font-weight: 700;
+            margin-block: 1rem;
+            margin-inline: auto;
+            padding: 1em;
+            width: 150px;
+        }
+
+        .item-product {
+            &__title {
+                padding-top: 1em;
+            }
+
+            &__price {
+                font-size: .9rem;
+
+            }
+
+            &__title,
+            &__price {
+                text-align: center;
+                color: $darkWoodColor;
+            }
+
+            &__inner {
+                display: block;
+                width: 100%;
+
+                img {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+
+        }
+    }
+
+    @include container-query(content, md, gt) {
+        &__top {
+            .text__title {
+                font-size: 3rem;
+            }
+        }
+
+        &__main {
+            grid-template-columns: repeat(4, 25%);
+
+            .gpw-button {
+                font-size: .9rem;
+            }
+
+            .item-product {
+                &__title {
+                    font-size: 1.2rem;
+                }
+            }
         }
     }
 }
