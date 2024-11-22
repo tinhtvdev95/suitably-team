@@ -1,0 +1,109 @@
+@use '../abstracts/' as *;
+/*
+==========================
+=      Contact Info      =
+==========================
+*/
+.contact-info {
+  &__empty-space {
+    background-color: var(--gray-color-50);
+    padding-block: 1.5625rem;
+  }
+
+  &__main {
+    padding-block: 3.125rem;
+    border-color: var(--primary-color-100);
+    border-style: solid;
+    border-width: .0625rem 0;
+    width: min(34.375rem, 100%);
+    margin-inline: auto;
+    display: grid;
+
+    @include container-query(content, md, gt) {
+      width: 100%;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__img {
+    display: none;
+    place-self: center;
+
+    @include container-query(content, md, gt) {
+      display: block;
+    }
+  }
+
+  &__content {
+    @include d-flex( column, $rowGap: 2rem );
+  }
+
+  &__title {
+    font-size: clamp(2.5rem, 3vw, 3rem);
+    text-transform: capitalize;
+    font-weight: 400;
+  }
+
+  &__sub-title, .company-info__item {
+    color: var(--gray-color-400);
+  }
+
+  .company-info__item {
+    margin-bottom: 2rem;
+
+    @include d-flex( $align: center, $colGap: .625rem );
+  }
+
+  &__socials-wrapper {
+    padding-inline: 2rem;
+
+    .socials {
+      width: min(34.375rem, 100%);
+      margin-inline: auto;
+      padding-block: 1.875rem;
+      
+      @include d-flex( $justify: space-between, $wrap: wrap, $colGap: 1.25rem, $rowGap: 2rem );
+
+      @include container-query(content, md, gt) {
+        width: 100%;
+      }
+
+      &__item {
+        transition: color 300ms;
+
+        @include d-flex( $align: center, $colGap: 1rem );
+
+        &-icon {
+          --icon-color: var(--primary-color-500);
+          --icon-size: 1.5rem;
+          position: relative;
+          width: calc( var(--icon-size) * 2 );
+          height: calc( var(--icon-size) * 2 );
+
+          &:before {
+            position: absolute;
+            inset: 0;
+            content: '';
+            rotate: 45deg;
+            border: .125rem solid var(--icon-color);
+          }
+          
+          img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: var(--icon-size);
+            height: var(--icon-size);
+            object-fit: contain;
+            filter: brightness(0) saturate(100%) invert(89%) sepia(5%) saturate(1095%) hue-rotate(360deg) brightness(87%) contrast(84%);
+          }
+        }
+
+        &:hover {
+          color: var(--primary-color-500);
+        }
+      }
+    }
+  }
+}
