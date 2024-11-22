@@ -24,6 +24,6 @@ if($buttonType) {
   }
 }
 ?>
-<a href="<?= esc_url($buttonUrl) ?>" class="<?= esc_attr( implode(' ', $classes) ) ?>" role="button" aria-roledescription="<?= esc_attr($buttonText) ?>">
+<a href="<?= $buttonUrl ?>" class="<?= esc_attr( implode(' ', $classes) ) ?>" role="button" aria-roledescription="<?= esc_attr($buttonText) ?>">
   <span><?= esc_html($buttonText) ?></span>
 </a>
