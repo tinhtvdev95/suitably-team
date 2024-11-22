@@ -1,0 +1,36 @@
+@use '../abstracts/' as *;
+/*
+==========================
+=         Global         =
+==========================
+*/
+#header {
+  container: header / inline-size;
+}
+
+.header {
+  &-info {
+    @include d-flex($wrap: wrap, $colGap: .5rem);
+
+    a, .company-info__item {
+      color: var(--gray-color-700);
+      transition: color 300ms;
+
+      @include d-flex($align: center, $colGap: .125rem);
+
+      .material-symbols-outlined {
+        color: var(--primary-color-500);
+        font-size: 1.25rem;
+        transition: color 300ms;
+      }
+
+      &:hover {
+        color: var(--gray-color-900);
+
+        .material-symbols-outlined {
+          color: var(--primary-color-700);
+        }
+      }
+    }
+  }
+}
