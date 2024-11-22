@@ -1,0 +1,53 @@
+@use '../abstracts/' as *;
+
+$whiteColor: #fff;
+
+.product-detail {
+    width: 100%;
+
+    &__image {
+        display: block;
+        width: 100%;
+
+        img {
+            width: 100%;
+        }
+    }
+
+
+    &__title {
+        padding-top: 1em;
+    }
+
+    &__price {
+        font-size: .9rem;
+
+    }
+
+    &__title,
+    &__price {
+        text-align: center;
+
+        span.amount {
+            color: var(--gray-color-800);
+        }
+    }
+
+    &__inner {
+        display: block;
+        width: 100%;
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+}
+
+@include container-query(content, md, gt) {
+    .product-detail {
+        &__title {
+            font-size: 1.2rem;
+        }
+    }
+}
