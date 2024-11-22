@@ -38,4 +38,21 @@ class CompanyInfo {
     }
     return sprintf('<a href="mailto:%s">%s</a>', $this->email, $this->email);
   }
+  public function getSocials($render = true) {
+    if( !$render ) {
+      return $this->socials;
+    }
+    ob_start();
+    ?>
+    <div class="socials">
+      <?php foreach($this->socials as $social) : ?>
+        <a class="socials__item" href="<?= esc_url($social['link']) ?>" target="_blank" rel="noopener noreferrer" aria-roledescription="Link to <?= $social['name'] ?>">
+          <div class="socials__item-icon"><?= wp_get_attachment_image($social['icon'], 'thumbnail', true ) ?></div>
+          <span>Follow us on <?= esc_html($social['name']) ?></span>
+        </a>
+      <?php endforeach; ?>
+    </div>
+    <?php
+    return ob_get_clean();
+  }
 }

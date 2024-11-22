@@ -20,7 +20,7 @@ get_header();
   <?php get_template_part('gpw-templates/global/section-logo'); ?>
   <?php get_template_part('gpw-templates/global/section-featured-products'); ?>
   <?php get_template_part('gpw-templates/homepage/why-us-section'); ?>
-
+  <?php get_template_part('gpw-templates/global/section-contact-info'); ?>
 </div>
 
 <?php
