@@ -24,6 +24,16 @@ $dataProducts = $productController->getFeaturedProducts();
         ]
       ); ?>
       <div class="featured-product__bottom">
+        <?php get_template_part(
+        'gpw-templates/global/buttons',
+        null,
+        [
+          'text' => 'Explore The Whole Range',
+          'url' => get_permalink(wc_get_page_id( 'shop' ) ),
+          'type' => 'outline-slide-bottom',
+          'class' => 'featured-product__item-product'
+        ]
+      ); ?>
       </div>
     </div>
   </div>
