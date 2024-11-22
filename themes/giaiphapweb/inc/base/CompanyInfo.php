@@ -47,7 +47,7 @@ class CompanyInfo {
     <div class="socials">
       <?php foreach($this->socials as $social) : ?>
         <a class="socials__item" href="<?= esc_url($social['link']) ?>" target="_blank" rel="noopener noreferrer" aria-roledescription="Link to <?= $social['name'] ?>">
-          <div class="socials__item-icon"><?= wp_get_attachment_image($social['icon'], 'thumbnail', true ) ?></div>
+          <div class="socials__item-icon"><?= wp_get_attachment_image($social['icon'], 'full', true ) ?></div>
           <span>Follow us on <?= esc_html($social['name']) ?></span>
         </a>
       <?php endforeach; ?>

@@ -12,7 +12,7 @@
 
   &__main {
     padding-block: 3.125rem;
-    border-color: var(--gray-color-100);
+    border-color: var(--primary-color-100);
     border-style: solid;
     border-width: .0625rem 0;
     width: min(34.375rem, 100%);
@@ -55,31 +55,53 @@
   }
 
   &__socials-wrapper {
+    padding-inline: 2rem;
+
     .socials {
       width: min(34.375rem, 100%);
       margin-inline: auto;
       padding-block: 1.875rem;
       
-      @include d-flex( $justify: space-between, $wrap: wrap, $colGap: 1.25rem );
+      @include d-flex( $justify: space-between, $wrap: wrap, $colGap: 1.25rem, $rowGap: 2rem );
 
       @include container-query(content, md, gt) {
         width: 100%;
       }
 
       &__item {
+        transition: color 300ms;
+
         @include d-flex( $align: center, $colGap: 1rem );
 
         &-icon {
           --icon-color: var(--primary-color-500);
-          --icon-size: 2rem;
+          --icon-size: 1.5rem;
+          position: relative;
+          width: calc( var(--icon-size) * 2 );
+          height: calc( var(--icon-size) * 2 );
 
-
+          &:before {
+            position: absolute;
+            inset: 0;
+            content: '';
+            rotate: 45deg;
+            border: .125rem solid var(--icon-color);
+          }
           
           img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: var(--icon-size);
             height: var(--icon-size);
             object-fit: contain;
+            filter: brightness(0) saturate(100%) invert(89%) sepia(5%) saturate(1095%) hue-rotate(360deg) brightness(87%) contrast(84%);
           }
+        }
+
+        &:hover {
+          color: var(--primary-color-500);
         }
       }
     }
