@@ -53,13 +53,18 @@ class Register extends BaseController
     $this->enqueueStyle('google-symbols', null, 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
     // * Enqueue swiper for page that needs it
-    if (is_front_page()) {
+    if (is_front_page() || is_product()) {
       $this->enqueueScript('swiper');
       $this->enqueueStyle('swiper');
     }
 
     if (is_front_page()) {
       $this->enqueueStyle('gpw-homepage');
+    }
+
+    if( is_product() ) {
+      $this->enqueueScript('gpw-single-product', null, '', ['swiper']);
+      $this->enqueueStyle('gpw-single-product', null, '', ['swiper']);
     }
   }
 

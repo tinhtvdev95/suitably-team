@@ -6,10 +6,7 @@
 ?>
 <section class="product-details">
   <div class="section__inner">
-    <div class="product-details__gallery">
-      <div class="gallery__main"></div>
-      <div class="gallery__thumb"></div>
-    </div>
+    <?php get_template_part('gpw-templates/woocommerce/product-details-gallery', null, ['product' => $product]) ?>
     <div class="product-details__content">Content</div>
   </div>
 </section>
