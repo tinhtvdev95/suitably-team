@@ -59,7 +59,8 @@
     color: #fff;
     --gradient-color-1: var(--primary-color-200);
     --gradient-color-2: var(--primary-color-600);
-    border-color: var(--primary-color-500);
+    border-color: var(--primary-color-200);
+    border-width: .0625rem;
     background: linear-gradient(180deg, var(--gradient-color-1), var(--gradient-color-2), var(--gradient-color-1));
     background-repeat: no-repeat;
     background-size: 100% 200%;
