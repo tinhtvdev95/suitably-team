@@ -1,0 +1,89 @@
+@use '../abstracts/' as *;
+/*
+==========================
+=         Why us         =
+==========================
+*/
+.why-us {
+  position: relative;
+  
+  &__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    &-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  .section__inner {
+    position: relative;
+    z-index: 2;
+    padding-block: 1.5625rem;
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: var(--content-col-width, calc(100% - 1.25rem));
+    justify-content: center;
+
+    @include container-query(content, sm, gt) {
+      --content-col-width: calc(100% - 5rem);
+    }
+
+    @include container-query(content, md, gt) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__title {
+    font-size: clamp(1.5rem, 2vw, 2rem);
+    text-align: center;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  &__reasons {
+    background-color: rgb(#fff, .9);
+    padding: 1.875rem;
+
+    .reason__item {
+      list-style-type: none;
+
+      @include d-flex($align: center, $colGap: 1rem);
+      
+      &:before {
+        --dot-size: .3125rem;
+        content: '';
+        display: block;
+        flex: 0 0 var(--dot-size);
+        width: var(--dot-size);
+        height: var(--dot-size);
+        background-color: var(--gray-color-950);
+        border-radius: 50%;
+      }
+    }
+
+    .gpw-button {
+      width: 100%;
+    }
+  }
+
+  &__features {
+    display: none;
+    background-color: rgb(from var(--primary-color-500) r g b/ .9);
+    
+    @include container-query(content, 62.5rem, gt) {
+      display: grid;
+      place-items: center;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .feature__item {
+      @include d-flex(column, center, center, $rowGap: .625rem);
+    }
+  }
+}
