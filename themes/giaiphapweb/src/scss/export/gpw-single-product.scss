@@ -107,6 +107,10 @@
         &.swiper-button-disabled {
           --button-color: var(--primary-color-200);
         }
+
+        &.swiper-button-lock {
+          display: none;
+        }
       }
     }
   }
