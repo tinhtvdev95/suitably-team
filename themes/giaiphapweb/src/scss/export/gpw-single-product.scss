@@ -1,0 +1,57 @@
+@use '../abstracts/' as *;
+@use '../components/buttons';
+/*
+==========================
+=         Global         =
+==========================
+*/
+#content {
+  container: content / inline-size;
+}
+/*
+==========================
+=    Product Details     =
+==========================
+*/
+.product-details {
+  padding-block: 1.875rem;
+  .section__inner {
+    --gap: 4rem;
+    --col-count: 1;
+    --col-width: calc((100% - var(--gap) * (var(--col-count) - 1)) / var(--col-count));
+
+    display: grid;
+    gap: var(--gap);
+    grid-template-columns: repeat(var(--col-count), var(--col-width));
+
+    @include container-query(content, md, gt) {
+      --col-count: 2;
+    }
+  }
+
+  &__gallery {
+    .gallery {
+      &__main {
+        .swiper-slide {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+
+          img {
+            --x: center;
+            --y: center;
+            --scale: 1;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(var(--scale));
+            transform-origin: var(--x) var(--y);
+          }
+        }
+      }
+
+      &__thumb {
+      }
+    }
+  }
+}
