@@ -47,7 +47,7 @@ const paths = {
   script: {
     // src: 'src/ts/export/',
     src: 'src/js/export/',
-    entries: [],
+    entries: ['gpw-single-product'],
     dest: './assets/js',
     // watch: 'src/ts/**/*.ts',
     watch: 'src/js/**/*.js',

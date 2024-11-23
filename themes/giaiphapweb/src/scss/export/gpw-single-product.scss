@@ -1,0 +1,117 @@
+@use '../abstracts/' as *;
+@use '../components/buttons';
+/*
+==========================
+=         Global         =
+==========================
+*/
+#content {
+  container: content / inline-size;
+}
+/*
+==========================
+=    Product Details     =
+==========================
+*/
+.product-details {
+  padding-block: 1.875rem;
+  .section__inner {
+    --gap: 4rem;
+    --col-count: 1;
+    --col-width: calc((100% - var(--gap) * (var(--col-count) - 1)) / var(--col-count));
+
+    display: grid;
+    gap: var(--gap);
+    grid-template-columns: repeat(var(--col-count), var(--col-width));
+
+    @include container-query(content, md, gt) {
+      --col-count: 2;
+    }
+  }
+
+  &__gallery {
+    .gallery {
+      &__main {
+        margin-bottom: .625rem;
+
+        .swiper-slide {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+
+          img {
+            --x: center;
+            --y: center;
+            --scale: 1;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(var(--scale));
+            transform-origin: var(--x) var(--y);
+          }
+        }
+      }
+
+      &__thumb {
+        position: relative;
+
+        .swiper-slide {
+          --border-color: var(--primary-color-200);
+          border: .0625rem solid var(--border-color);
+
+          &:before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: rgb(#fff, .35);
+            transition: opacity 300ms;
+          }
+
+          
+
+          &:hover, &.swiper-slide-thumb-active {
+            border-color: var(--primary-color-700);
+
+            &:before {
+              opacity: 0;
+            }
+          }
+        }
+      }
+
+      &__btn {
+        --button-size: 2.5rem;
+        position: absolute;
+        z-index: 2;
+        top: 50%;
+        transform: translate(var(--translate-x, 0%),-50%);
+        width: var(--button-size);
+        height: var(--button-size);
+        display: grid;
+        place-items: center;
+        border: none;
+        border-radius: 50%;
+        background-color: var(--button-color, var(--primary-color-700));
+        color: #fff;
+
+        &--next {
+          --translate-x: 50%;
+          right: 0;
+        }
+        
+        &--prev {
+          --translate-x: -50%;
+          left: 0;
+        }
+
+        &.swiper-button-disabled {
+          --button-color: var(--primary-color-200);
+        }
+
+        &.swiper-button-lock {
+          display: none;
+        }
+      }
+    }
+  }
+}
