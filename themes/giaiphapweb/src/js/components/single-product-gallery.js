@@ -30,6 +30,10 @@ export default class SingleProductGallery {
           slidesPerView: 4,
         },
       },
+      navigation: {
+        nextEl: '.gallery__btn--next',
+        prevEl: '.gallery__btn--prev',
+      },
     });
     const mainSwiper = new Swiper(this._mainGalleryEl, {
       spaceBetween: 10,

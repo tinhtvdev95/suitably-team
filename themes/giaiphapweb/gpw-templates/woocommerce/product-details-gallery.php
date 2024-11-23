@@ -40,5 +40,11 @@ if (!in_array($productImgID, $galleryIDs)) {
         <?php endforeach ?>
       </div>
     </div>
+    <a href="javascript:void(0);" class="gallery__btn gallery__btn--prev" role="button" aria-roledescription="Gallery thumbnails next button">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </a>
+    <a href="javascript:void(0);" class="gallery__btn gallery__btn--next" role="button" aria-roledescription="Gallery thumbnails next button">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </a>
   </div>
 </div>

@@ -32,6 +32,8 @@
   &__gallery {
     .gallery {
       &__main {
+        margin-bottom: .625rem;
+
         .swiper-slide {
           width: 100%;
           height: 100%;
@@ -51,6 +53,60 @@
       }
 
       &__thumb {
+        position: relative;
+
+        .swiper-slide {
+          --border-color: var(--primary-color-200);
+          border: .0625rem solid var(--border-color);
+
+          &:before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: rgb(#fff, .35);
+            transition: opacity 300ms;
+          }
+
+          
+
+          &:hover, &.swiper-slide-thumb-active {
+            border-color: var(--primary-color-700);
+
+            &:before {
+              opacity: 0;
+            }
+          }
+        }
+      }
+
+      &__btn {
+        --button-size: 2.5rem;
+        position: absolute;
+        z-index: 2;
+        top: 50%;
+        transform: translate(var(--translate-x, 0%),-50%);
+        width: var(--button-size);
+        height: var(--button-size);
+        display: grid;
+        place-items: center;
+        border: none;
+        border-radius: 50%;
+        background-color: var(--button-color, var(--primary-color-700));
+        color: #fff;
+
+        &--next {
+          --translate-x: 50%;
+          right: 0;
+        }
+        
+        &--prev {
+          --translate-x: -50%;
+          left: 0;
+        }
+
+        &.swiper-button-disabled {
+          --button-color: var(--primary-color-200);
+        }
       }
     }
   }
