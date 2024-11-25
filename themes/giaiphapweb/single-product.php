@@ -11,6 +11,7 @@ get_header();
 <div id="content">
   <?php get_template_part('gpw-templates/woocommerce/section-product-details', null) ?>
   <?php get_template_part('gpw-templates/woocommerce/product-description', null) ?>
+  <?php get_template_part('gpw-templates/woocommerce/product-related', null) ?>
 </div>
 
 <?php
