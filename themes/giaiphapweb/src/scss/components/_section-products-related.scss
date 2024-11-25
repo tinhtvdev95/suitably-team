@@ -1,0 +1,60 @@
+@use '../abstracts/' as *;
+@use '../components/section-product-detail';
+
+.related-product {
+    margin-top: 4rem;
+    margin-bottom: 8rem;
+
+    &__top {
+        .text__title {
+            text-align: center;
+            color: #000;
+            font-size: 4.3rem;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+    }
+
+    &__main {
+        .gpw-button {
+            font-size: .9rem;
+            font-weight: 700;
+            margin-block: 1rem;
+            margin-inline: auto;
+            padding: 1em;
+            width: 9.375rem;
+        }
+    }
+
+    @include container-query(content, md, lt) {
+        &__top {
+            .text__title {
+                font-size: 3.3rem;
+            }
+        }
+
+        &__main {
+            @include grid(repeat(2, 1fr));
+        }
+    }
+
+    @include container-query(content, sm, lt) {
+        margin-top: 2rem;
+        margin-bottom: 6rem;
+
+        &__main {
+            @include grid(repeat(1, 1fr));
+
+            .gpw-button {
+                font-size: .8125rem;
+            }
+        }
+    }
+
+
+    @include container-query(content, md, gt) {
+        &__main {
+            @include grid(repeat(4, 25%));
+        }
+    }
+}

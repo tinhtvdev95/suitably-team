@@ -20,9 +20,9 @@ class ProductController
                 $productId = get_the_ID();
                 $product = wc_get_product($productId);
                 $products_data[] = array(
-                    'id'    => $productId,
+                    'id' => $productId,
                     'title' => get_the_title(),
-                    'link'  => get_permalink(),
+                    'link' => get_permalink(),
                     'image' => get_the_post_thumbnail($productId, 'medium'),
                     'price' => $product ? $product->get_price_html() : '',
                 );
@@ -41,13 +41,13 @@ class ProductController
     public function getFeaturedProducts()
     {
         $args = array(
-            'post_type'      => 'product',
+            'post_type' => 'product',
             'posts_per_page' => 4,
-            'tax_query'      => array(
+            'tax_query' => array(
                 array(
                     'taxonomy' => 'product_visibility',
-                    'field'    => 'name',
-                    'terms'    => 'featured',
+                    'field' => 'name',
+                    'terms' => 'featured',
                     'operator' => 'IN',
                 ),
             ),
@@ -64,12 +64,52 @@ class ProductController
     public function getNewProducts()
     {
         $args = array(
-            'post_type'      => 'product',
+            'post_type' => 'product',
             'posts_per_page' => 4,
-            'orderby'        => 'date',
-            'order'          => 'DESC',
+            'orderby' => 'date',
+            'order' => 'DESC',
         );
 
         return $this->getProducts($args);
+    }
+
+    /**
+     * Get related products for a given product ID.
+     *
+     * This method retrieves a list of related products based on the WooCommerce algorithm.
+     * It includes product ID, title, link, image, and price.
+     *
+     * @param int $id The ID of the product to find related products for.
+     * 
+     * @return array[] List of related products with the following structure:
+     * [
+     *     'id' => int, // The ID of the related product.
+     *     'title' => string, // The title of the related product.
+     *     'link' => string, // The permalink to the related product.
+     *     'image' => string, // The HTML of the product's thumbnail image.
+     *     'price' => string, // The HTML representation of the product price.
+     * ]
+     */
+    public function getRelatedProducts($id)
+    {
+        $relatedLimit = 4;
+        $relatedIds = wc_get_related_products($id, $relatedLimit);
+        $products_data = [];
+
+        foreach ($relatedIds as $relatedId) {
+            $relatedProduct = wc_get_product($relatedId);
+            if (!$relatedProduct) {
+                continue;
+            }
+            $products_data[] = array(
+                'id' => $relatedId,
+                'title' => get_the_title($relatedId),
+                'link' => get_permalink($relatedId),
+                'image' => get_the_post_thumbnail($relatedId, 'medium'),
+                'price' => $relatedProduct->get_price_html(),
+            );
+        }
+
+        return $products_data;
     }
 }
