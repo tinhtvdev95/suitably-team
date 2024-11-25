@@ -9,7 +9,8 @@ get_header();
 ?>
 
 <div id="content">
-  <?php get_template_part('gpw-templates/woocommerce/section-product-details', null, ['product' => $product]) ?>
+  <?php get_template_part('gpw-templates/woocommerce/section-product-details', null) ?>
+  <?php get_template_part('gpw-templates/woocommerce/product-description', null) ?>
 </div>
 
 <?php
