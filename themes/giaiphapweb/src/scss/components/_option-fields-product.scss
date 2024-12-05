@@ -1,0 +1,310 @@
+@use '../abstracts/' as *;
+
+.product-details__fit-customization {
+    margin-top: 3em;
+    background: rgba(232, 215, 194, .28);
+
+    .fit-customization__container {
+        overflow: hidden;
+        transition: height 0.5s ease-out, opacity 0.5s ease-out;
+        height: auto;
+        opacity: 1;
+    }
+
+    .fit-customization__container.hidden {
+        height: 0;
+        opacity: 0;
+    }
+
+    .fit-customization {
+        &__title {
+            text-align: center;
+            line-height: 1;
+            padding-block: .5rem;
+            font-weight: 400;
+            font-size: 1.1rem;
+            border-radius: to-rem(15);
+            transition: color 300ms, background 300ms;
+
+            &.active {
+                background: gray;
+                padding: to-rem(10);
+                color: #fff;
+            }
+        }
+
+        &__title-customize {
+            display: flex;
+            gap: 1em;
+            justify-content: center;
+            margin: 0 auto;
+            padding-block: 1rem;
+
+        }
+    }
+
+    .fit-options {
+
+        @include grid(repeat(2, 1fr));
+
+        &__title {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+
+        &__label {
+            margin-bottom: 1rem;
+            cursor: pointer;
+            @include d-flex(row, flex-start, center, nowrap, 1rem, 0);
+
+            input {
+                margin: 0;
+                display: none;
+            }
+        }
+
+        &__input-indicator {
+            border: 1px solid;
+            cursor: pointer;
+            height: 2em;
+            width: 2em;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            position: relative;
+
+            &::after {
+                opacity: 0;
+                content: "\f111";
+                font-weight: 900;
+                height: 1rem;
+                width: 1rem;
+                position: absolute;
+                top: to-rem(5);
+                left: to-rem(5);
+                text-align: center;
+            }
+        }
+
+        &__input-wrapper {
+            input[type="radio"]:checked+.fit-options__input-indicator::after {
+                opacity: 1;
+                font-family: 'Font Awesome 6 Free';
+            }
+        }
+
+        &__image-wrapper {
+            margin-bottom: 1rem;
+            @include grid(repeat(4, 25%));
+        }
+
+        &__input {
+            display: none;
+        }
+
+        &__image-item {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        &__label-image {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1em;
+            cursor: pointer;
+
+            input[type="radio"]:checked+.fit-options__image {
+                border: 2px solid red;
+            }
+
+            input[type="radio"]:checked+.fit-options__image+.fit-options__name {
+                color: red;
+            }
+
+            .fit-options__name {
+                text-align: center
+            }
+
+        }
+
+
+
+    }
+
+    .is-penultimate {
+        @include grid(repeat(2, 1fr), auto, 1rem, .5rem);
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+}
+
+.product-details__fit-option-fields {
+    overflow: hidden;
+    transition: height 0.5s ease-out, opacity 0.5s ease-out;
+    height: auto;
+    opacity: 1;
+
+    .fit-option-fields {
+        &__top {
+            padding: 1rem;
+            @include d-flex($align: center);
+
+            .fit-option-fields-top {
+                &__go-back {
+                    white-space: nowrap;
+                    width: to-rem(30);
+                }
+
+                &__title {
+                    text-align: center;
+                    margin: 0;
+                }
+            }
+        }
+
+        &__main {
+            height: to-rem(500);
+            overflow-y: scroll;
+            @include grid(repeat(2, 1fr));
+
+            &-label {
+                background: wheat;
+                cursor: pointer;
+                @include d-flex(column, center, center, nowrap);
+
+                &:has(.fit-option-fields__main-input:checked) {
+                    border: 2px solid #333;
+                }
+            }
+
+            &-input {
+                display: none;
+            }
+        }
+    }
+}
+
+.navigation {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+
+    &__prev,
+    &__next {
+        background: #c8bba1;
+        padding: .5rem;
+        color: #fff;
+    }
+
+    .swiper-button-lock {
+        display: none;
+    }
+
+    .swiper-button-disabled {
+        background: #e0d8c7;
+    }
+}
+
+
+@include container-query(content, xs, gt) {
+
+    .product-details__fit-customization {
+        .fit-options {
+            @include grid($columns: repeat(3, 30%),
+                $gap: 10px,
+                $justifyContent: center);
+        }
+
+        .fit-options.fit-option-1 {
+            @include grid($columns: repeat(1, 1fr),
+                $gap: 10px,
+                $justifyContent: center);
+        }
+
+        .fit-options.fit-option-2 {
+            @include grid($columns: repeat(2, 50%),
+                $gap: 10px,
+                $justifyContent: center);
+
+            .fit-options__image {
+                width: 10rem;
+                height: 13rem;
+                object-fit: fill;
+            }
+        }
+    }
+}
+
+@include container-query(content, sm, gt) {
+
+    .product-details__fit-option-fields {
+        .fit-option-fields {
+            &__main {
+                @include grid($columns: repeat(3, 30%),
+                    $gap: 10px,
+                    $justifyContent: center);
+
+                &-label {
+                    @include d-flex(column, center, center, nowrap);
+
+                    .fit-option-fields__main-option-name {
+                        margin-block: .5rem;
+                        text-align: center;
+                    }
+
+                    .attachment-thumbnail {
+                        width: 100%;
+                        padding-inline: to-rem(5);
+                    }
+
+                    .fit-option-fields__main-bottom {
+                        width: 85%;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        padding-block: to-rem(5);
+                        align-items: center;
+
+                        .fit-option-fields__main-option-price {
+                            margin: 0;
+                        }
+
+                        .img-tick {
+                            width: to-rem(30);
+                            opacity: 0;
+                            filter: brightness(0) contrast(3) url(#teal-white);
+
+                            &.active {
+                                opacity: 1;
+                                filter: brightness(0) contrast(3) url(#teal-white);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: #f5deb3;
+    box-shadow: 0 0 1px #f5deb3;
+}

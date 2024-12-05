@@ -1,6 +1,8 @@
 @use '../abstracts/' as *;
 @use '../components/buttons';
 @use '../components/_section-products-related';
+@use '../components/option-fields-product';
+
 /*
 ==========================
 =         Global         =
@@ -9,6 +11,7 @@
 #content {
   container: content / inline-size;
 }
+
 /*
 ==========================
 =    Product Details     =
@@ -16,6 +19,7 @@
 */
 .product-details {
   padding-block: 1.875rem;
+
   .section__inner {
     --gap: 4rem;
     --col-count: 1;
@@ -68,9 +72,10 @@
             transition: opacity 300ms;
           }
 
-          
 
-          &:hover, &.swiper-slide-thumb-active {
+
+          &:hover,
+          &.swiper-slide-thumb-active {
             border-color: var(--primary-color-700);
 
             &:before {
@@ -85,7 +90,7 @@
         position: absolute;
         z-index: 2;
         top: 50%;
-        transform: translate(var(--translate-x, 0%),-50%);
+        transform: translate(var(--translate-x, 0%), -50%);
         width: var(--button-size);
         height: var(--button-size);
         display: grid;
@@ -99,7 +104,7 @@
           --translate-x: 50%;
           right: 0;
         }
-        
+
         &--prev {
           --translate-x: -50%;
           left: 0;
