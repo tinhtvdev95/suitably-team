@@ -63,12 +63,9 @@ $processSteps = array_map(function ($step) {
               $inputText = $option['name'];
               $optionPrice = $option['price'];
               $optionClass = ['step-option'];
-              if ($j === 0) {
-                $optionClass[] = 'step-option--selected';
-              }
               ?>
               <label class="<?= esc_attr( implode( ' ', $optionClass ) ) ?>">
-                <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>">
+                <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>" <?= $j === 0 ? 'checked' : '' ?>>
                 <span class="step-option__name"><?= esc_html($inputText) ?></span>
                 <?= wp_get_attachment_image($featureImgID, 'large_medium', false, [ 'class' => 'step-option__feature-img' ]) ?>
                 <div class="step-option__meta">

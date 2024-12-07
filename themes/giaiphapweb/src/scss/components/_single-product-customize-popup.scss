@@ -1,7 +1,6 @@
 @use '../abstracts/' as *;
 @use '../components/buttons';
 
-
 /*
 ================================
 =        Customize Popup       =
@@ -135,6 +134,8 @@
         grid-template-columns: 100%;
         gap: .625rem;
         border: .0625rem solid var(--step-option-bg-clr);
+        cursor: pointer;
+        transition: border-color 300ms;
 
         input {
           display: none;
@@ -154,6 +155,7 @@
           background: var(--step-option-bg-clr);
           color: #fff;
           line-height: 1;
+          transition: background-color 300ms;
         }
 
         &__meta {
@@ -167,9 +169,13 @@
           opacity: var(--step-option-checked-opacity);
         }
         
-        &--selected {
+        &:has(input[checked]) {
           --step-option-bg-clr: var(--gray-color-500);
           --step-option-checked-opacity: 1;
+        }
+
+        &:hover:not(:has(input[checked])) {
+          --step-option-bg-clr: var(--gray-color-400);
         }
       }
 
