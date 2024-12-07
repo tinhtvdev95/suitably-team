@@ -79,19 +79,3 @@ $processSteps = array_map(function ($step) {
 
   ) ?>
 </form>
-
-<?php
-function renderFitOption($item, $data, $inputName = 'fit-option')
-{
-  $name = $item['name'] ?? $item['title'];
-  ?>
-  <label class="fit-options__label-image">
-    <input class="fit-options__input" type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($name) ?>"
-      data-price="<?= esc_attr($item['price']) ?>">
-    <input class="fit-options__input-data" type="hidden" value="<?= esc_attr($data) ?>">
-    <img class="fit-options__image" src="<?= esc_url(wp_get_attachment_url($item['image'])) ?>"
-      data-tm-tooltip-swatch-img-lbl-desc="on" data-tm-hide-label="no">
-    <p class="fit-options__name"><?= esc_html($name) ?></p>
-  </label>
-  <?php
-}

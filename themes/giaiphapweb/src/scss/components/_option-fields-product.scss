@@ -149,51 +149,6 @@
     }
 }
 
-.product-details__fit-option-fields {
-    overflow: hidden;
-    transition: height 0.5s ease-out, opacity 0.5s ease-out;
-    height: auto;
-    opacity: 1;
-
-    .fit-option-fields {
-        &__top {
-            padding: 1rem;
-            @include d-flex($align: center);
-
-            .fit-option-fields-top {
-                &__go-back {
-                    white-space: nowrap;
-                    width: to-rem(30);
-                }
-
-                &__title {
-                    text-align: center;
-                    margin: 0;
-                }
-            }
-        }
-
-        &__main {
-            height: to-rem(500);
-            overflow-y: scroll;
-            @include grid(repeat(2, 1fr));
-
-            &-label {
-                background: wheat;
-                cursor: pointer;
-                @include d-flex(column, center, center, nowrap);
-
-                &:has(.fit-option-fields__main-input:checked) {
-                    border: 2px solid #333;
-                }
-            }
-
-            &-input {
-                display: none;
-            }
-        }
-    }
-}
 
 .navigation {
     width: 100%;
@@ -252,9 +207,7 @@
     .product-details__fit-option-fields {
         .fit-option-fields {
             &__main {
-                @include grid($columns: repeat(3, 30%),
-                    $gap: 10px,
-                    $justifyContent: center);
+
 
                 &-label {
                     @include d-flex(column, center, center, nowrap);

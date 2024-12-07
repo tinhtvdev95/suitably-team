@@ -147,6 +147,8 @@ class ProductController
 
     public function processProductOptions($optionFields, $mergeArray)
     {
+        $newNameArray = str_replace(' ', '_', $mergeArray);
+
         [$fitLevelArrays, $keysToRemove] = $this->filterMatchingOptions($optionFields, $mergeArray);
         $optionFields = $this->removeKeysFromArray($optionFields, $keysToRemove);
         if (!empty($fitLevelArrays)) {
@@ -154,10 +156,10 @@ class ProductController
             $optionFields = $this->insertIntoArray(
                 $optionFields,
                 $firstKey,
-                [$mergeArray => $fitLevelArrays]
+                [$newNameArray => $fitLevelArrays]
             );
         }
-
+        
         return $optionFields;
     }
 }

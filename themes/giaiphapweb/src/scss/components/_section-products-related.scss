@@ -16,6 +16,8 @@
     }
 
     &__main {
+        @include grid(repeat(4, 25%));
+
         .gpw-button {
             font-size: .9rem;
             font-weight: 700;
@@ -35,7 +37,6 @@
 
         &__main {
             @include grid(repeat(2, 1fr));
-            background: ;
         }
     }
 
