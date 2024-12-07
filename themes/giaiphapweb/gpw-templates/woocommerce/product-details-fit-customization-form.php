@@ -1,45 +1,76 @@
 <?php
-
-use \gpw\controller\ProductController;
-$productController = new ProductController();
-
 /**
  * @package GiapPhapWeb_Theme
  * * Template for display product details Fit and Customization form.
  */
 global $product;
 
-$productOptionFields = get_fields('product-options-fields', 'product_option_field');
-
-$titleOptions = $productOptionFields['product_option_field'][0]['title'];
-
-$mainItemOptions = $productOptionFields['product_option_field'];
-
-
-$optionFields = $productOptionFields['product_option_field'][0]['options'];
-
-// foreach ($optionFields as &$item) {
-//   if ($item['option']) {
-//     foreach ($item['option'] as &$option) {
-//       $option['url_image'] = wp_get_attachment_image($option['image']);
-//     }
-//   }
-
-// }
-// unset($item);
-
-$fitLevel = 'fit_level';
-// $optionFields = $productController->processProductOptions($optionFields, $fitLevel);
+$steps = get_field('steps', 'customize_product_form');
+$processSteps = array_map(function ($step) {
+  return ['name' => $step['name'], 'slug' => sanitize_title($step['name'])];
+}, $steps);
 ?>
-<form class="product-details__fit-customization fit-customization" method="POST">
-  <?php wp_nonce_field('fit_customization', 'fit_customization_nonce') ?>
-  <input type="hidden" name="action" value="fit_customization">
-  <nav class="fit-customization__title-customize">
-  </nav>
-  <div class="fit-customization__container">
-    <div class="swiper swiper-option-fields">
-      <div class="swiper-wrapper">
-      </div>
+<a href="javascript:void(0);" class="product-details__open-customize-popup-btn gpw-button gpw-button__outline gpw-button__outline--slide-bottom" role="button" aria-roledescription="Open customize popup">
+  <span>Start Customize</span>
+</a>
+<dialog class="product-details__customize-popup">
+  <header class="customize-popup__header">
+    <h2 class="customize-popup__title">Fit and Customization</h2>
+    <button class="customize-popup__close-btn" aria-label="Close customize popup" title="Close customize popup">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </header>
+  <form class="customize-popup__fit-customization fit-customization" method="POST">
+    <?php wp_nonce_field('fit_customization', 'fit_customization_nonce') ?>
+    <input type="hidden" name="action" value="fit_customization">
+    <aside class="customize-popup__process-step">
+      <h3 class="customize-popup__process-step-title">Process steps</h3>
+      <ul class="customize-popup__nav">
+        <?php for ($i = 0; $i < count($processSteps); $i++):
+          $step = $processSteps[$i];
+          $class = ['customize-popup__nav-item'];
+
+            $class[] = $i === 0 ? 'customize-popup__nav-item--active' : 'customize-popup__nav-item--disabled';
+          ?>
+          <li class="<?= esc_attr(implode(' ', $class)) ?>">
+            <span class="material-symbols-outlined">check_circle</span>
+            <a href="javascript:void(0);" data-target="<?= esc_attr($step['slug']) ?>"><?= esc_html($step['name']) ?></a>
+          </li>
+        <?php endfor; ?>
+      </ul>
+    </aside>
+    <div class="customize-popup__detail-step">
+      <?php for ($i = 0; $i < count($steps); $i++):
+        $step = $steps[$i];
+        $class = ['customize-popup__step'];
+        if($i === 0) {
+          $class[] = 'customize-popup__step--active';
+        }
+        $options = $step['options'];
+        $stepTitle = $step['name'];
+        $stepID = sanitize_title($step['name']);
+        ?>
+        <div class="<?= implode(' ', $class) ?>" id="<?= esc_attr($stepID) ?>">
+          <h3 class="customize-popup__step-title"><?= esc_html($stepTitle) ?></h3>
+          <div class="customize-popup__step-options">
+            <?php for ($j = 0; $j < count($options); $j++):
+              $option = $options[$j];
+              $featureImgID = $option['feature_img_id'];
+              $inputName = $stepID;
+              $inputValue = sanitize_title($option['name']);
+              $inputText = $option['name'];
+              ?>
+              <label class="step-option">
+                <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>">
+                <span><?= esc_html($inputText) ?></span>
+                <?= wp_get_attachment_image($featureImgID, 'large_medium', false) ?>
+              </label>
+            <?php endfor; ?>
+          </div>
+          <button type="button" class="customize-popup__step-continue-btn gpw-button gpw-button__gradient" data-option-name="<?= esc_attr($stepID) ?>">Continue</button>
+        </div>
+
+      <?php endfor; ?>
     </div>
   </div>
   <?php get_template_part(
