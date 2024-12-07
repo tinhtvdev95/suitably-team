@@ -8,6 +8,8 @@
 */
 .product-details__customize-popup {
   --dialog-transition-time: 500ms;
+  --dialog-padding: 1.875rem;
+
   display: block;
   z-index: -1;
   opacity: 0;
@@ -15,6 +17,7 @@
   width: 100%;
   height: 100%;
   border: 0;
+  padding: 0;
   transition: opacity var(--dialog-transition-time), transform var(--dialog-transition-time), z-index var(--dialog-transition-time);
   
   &[open] {
@@ -60,6 +63,7 @@
     &__fit-customization {
       --sidebar-width: 17.5rem;
       display: grid;
+      height: 100%;
 
       @include container-query(content, md, gt) {
         grid-template-columns: var(--sidebar-width) calc(100% - var(--sidebar-width));
@@ -67,6 +71,9 @@
     }
 
     &__process-step {
+      background-color: var(--primary-color-200);
+      padding: var(--dialog-padding) 0 var(--dialog-padding) var(--dialog-padding);
+
       &-title {
         text-transform: capitalize;        
       }
@@ -104,6 +111,7 @@
     }
 
     &__detail-step {
+      padding: var(--dialog-padding);
       container: detail-step / inline-size;
     }
 
@@ -122,7 +130,11 @@
       }
 
       &-options {
-        @include d-flex($justify: center, $wrap: wrap, $colGap: var(--options-gap));        
+        @include d-flex($justify: center, $wrap: wrap, $colGap: var(--options-gap));   
+        
+        &--flex-start {
+          justify-content: flex-start;
+        }
       }
 
       .step-option {
@@ -147,18 +159,23 @@
         }
 
         &__name {
+          font-size: .875rem;
           text-align: center;
           padding: .625rem;
+          line-height: 1.3;
+          height: calc(1rem * 1.3 * 2 + .625rem * 2);
+          display: grid;
+          place-items: center;
         }
         
         &__name, &__meta {
           background: var(--step-option-bg-clr);
           color: #fff;
-          line-height: 1;
           transition: background-color 300ms;
         }
-
+        
         &__meta {
+          line-height: 1;
           padding: .3125rem .625rem;
           
           @include d-flex($justify: space-between, $align: center);
@@ -179,7 +196,7 @@
         }
       }
 
-      &-continue-btn {
+      &-continue-btn, .customize-popup__submit-btn {
         margin: 1.25rem auto 0;
       }
 
