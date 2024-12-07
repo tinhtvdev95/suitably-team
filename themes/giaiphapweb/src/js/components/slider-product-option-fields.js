@@ -75,9 +75,9 @@ export default class SliderProductOptionFields {
 
         const labelOption = document.querySelectorAll(this.labelOptionSelector);
 
-        if (fitOptionFields) {
-            fitOptionFields.classList.add(this.hiddenClass);
-        }
+        // if (fitOptionFields) {
+        //     fitOptionFields.classList.add(this.hiddenClass);
+        // }
 
         if (labels.length && container && fitOptionFields) {
             labels.forEach((label) => {

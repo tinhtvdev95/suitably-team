@@ -112,4 +112,52 @@ class ProductController
 
         return $products_data;
     }
+
+    public function filterMatchingOptions($optionFields, $mergeArray)
+    {
+        $matchingOptions = [];
+        $keysToRemove = [];
+
+        foreach ($optionFields as $key => $item) {
+            if (strpos($item['merge_array'], $mergeArray) !== false) {
+                $matchingOptions[] = $item;
+                $keysToRemove[] = $key;
+            }
+        }
+
+        return [$matchingOptions, $keysToRemove];
+    }
+
+    public function removeKeysFromArray($array, $keysToRemove)
+    {
+        foreach (array_reverse($keysToRemove) as $key) {
+            unset($array[$key]);
+        }
+        return $array;
+    }
+
+    public function insertIntoArray($array, $position, $newElements)
+    {
+        return array_merge(
+            array_slice($array, 0, $position),
+            $newElements,
+            array_slice($array, $position)
+        );
+    }
+
+    public function processProductOptions($optionFields, $mergeArray)
+    {
+        [$fitLevelArrays, $keysToRemove] = $this->filterMatchingOptions($optionFields, $mergeArray);
+        $optionFields = $this->removeKeysFromArray($optionFields, $keysToRemove);
+        if (!empty($fitLevelArrays)) {
+            $firstKey = reset($keysToRemove);
+            $optionFields = $this->insertIntoArray(
+                $optionFields,
+                $firstKey,
+                [$mergeArray => $fitLevelArrays]
+            );
+        }
+
+        return $optionFields;
+    }
 }
