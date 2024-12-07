@@ -7,9 +7,6 @@
 */
 
 .product-details {
-    &-custom-option__container {
-        background: var(--primary-color-100);
-    }
     &__fit-option-fields {
         overflow: hidden;
         transition: height 0.5s ease-out, opacity 0.5s ease-out;
@@ -18,8 +15,27 @@
     }
 
     &-custom-option {
+        &__container {
+            display: none;         
+            
+            .swiper {
+                height: 1px;
+                opacity: 0;
+                transition: height 300ms, opacity 300ms;
+            }
+
+            &--active {
+                display: block;
+            }
+
+            &--active.product-details-custom-option__container--show-children {
+                .swiper {
+                    opacity: 1;
+                    height: 100%;
+                }
+            }
+        }
         &__title {
-            padding-top: 1rem;
             text-align: center;
             margin: 0;
         }
@@ -48,16 +64,11 @@
         }
 
         &__main {
-            height: to-rem(500);
+            height: to-rem(600);
             overflow-y: scroll;
             padding-inline: 2rem;
-            $column-width: 23%;
-            @include grid($columns: repeat(4, #{$column-width}),
-                $gap: to-rem(10),
-                $justifyContent: center);
 
             &-label {
-                background: wheat;
                 cursor: pointer;
                 @include d-flex(column, center, center, nowrap);
 
@@ -70,29 +81,8 @@
                 display: none;
             }
         }
-
-        &__item {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            gap: .5rem;
-
-            input {
-                display: none;
-            }
-            span {
-                height: 3.5rem;
-            }
-        }
-
     }
 
-    .fit-option-fields__main-merge {
-        display: grid;
-        grid-template-columns: repeat(3, 33%);
-    }
     .fit-option-fields-top__title {
         text-align: center;
     }

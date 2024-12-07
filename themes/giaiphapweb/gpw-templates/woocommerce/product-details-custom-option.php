@@ -10,74 +10,122 @@ use \gpw\controller\ProductController;
 // Initialize Product Controller
 $productController = new ProductController();
 
-// Get options data
-$optionFields = get_field('steps', 'customize_product_form');
-$chooseDetailsCommon = $optionFields[3]['options'][0];
+// Get options index
+$optionIndex = $args['optionIndex'] ?? 0;
 
-// Define fit level
-$fitLevel = 'vent and chest';
-$chooseDetails = $productController->processProductOptions($chooseDetailsCommon['children'], $fitLevel);
+// Get options data
+$chooseDetailsCommon = $args['chooseDetailsCommon'] ?? [];
+
+if ($chooseDetailsCommon['children']) {
+    $fitLevel = '';
+    foreach ($chooseDetailsCommon['children'] as $child) {
+        if ($child['merge_array']) {
+            $fitLevel = $child['merge_array'];
+            break;
+        }
+    }
+    $chooseDetails = $productController->processProductOptions($chooseDetailsCommon['children'], $fitLevel);
+} else {
+    $chooseDetails = [];
+}
 
 // Function to render fit option fields
-function render_fit_option_fields($fields)
-{
-    if (!$fields)
-        return;
+if (!function_exists('render_fit_option_fields')) {
+    function render_fit_option_fields($fields, $parentName) 
+    {
+        if (!$fields)
+            return;
 
-    foreach ($fields as $field): ?>
-        <h3 class="fit-option-fields-top__title"><?= esc_html($field['name']) ?></h3>
-        <div class="fit-option-fields__main-merge">
-            <?php if (!empty($field['option'])):
-                foreach ($field['option'] as $option): ?>
-                    <label class="fit-option-fields__item">
-                        <input type="radio" name="<?= esc_attr($field['name']) ?>" value="<?= esc_attr($option['name']) ?>">
-                        <span><?= esc_html($option['name']) ?></span>
-                        <?= wp_get_attachment_image($option['feature_img_id'], 'thumbnail') ?>
-                    </label>
-                <?php endforeach;
-            endif; ?>
-        </div>
-    <?php endforeach;
+        foreach ($fields as $field):
+            $fieldClass = ['fit-option-fields__main-merge', 'customize-popup__step-options'];
+            if (count($field['option']) >= 4) {
+                $fieldClass[] = 'customize-popup__step-options--flex-start';
+            }
+            ?>
+            <h3 class="fit-option-fields-top__title"><?= esc_html($field['name']) ?></h3>
+            <div class="<?= esc_attr(implode(' ', $fieldClass)) ?>">
+                <?php if (!empty($field['option'])):
+                    for ($i = 0; $i < count($field['option']); $i++):
+                        $option = $field['option'][$i];
+                        $inputName = $parentName . '-' . sanitize_title($field['name']);
+                        $optionPrice = $option['price'] ?? '';
+                        ?>
+                        <label class="fit-option-fields__item step-option">
+                            <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($option['name']) ?>" <?= $i === 0 ? esc_attr('checked') : '' ?>>
+                            <span class="step-option__name"><?= esc_html($option['name']) ?></span>
+                            <?= wp_get_attachment_image($option['feature_img_id'], 'medium', false, ['class' => 'step-option__feature-img']) ?>
+                            <div class="step-option__meta">
+                                <span class="step-option__price"><?= $optionPrice ?: '' ?></span>
+                                <span class="step-option__state material-symbols-outlined">check</span>
+                            </div>
+                        </label>
+                    <?php endfor;
+                endif; ?>
+            </div>
+        <?php endforeach;
+    }
 }
 
 // Function to render swiper slides
-function render_swiper_slides($chooseDetails, $commonDetails)
-{
-    foreach ($chooseDetails as $key => $fields): ?>
-        <div class="swiper-slide">
-            <div class="product-details__fit-option-fields fit-option-fields">
-                <div class="fit-option-fields__top">
-                    <h3 class="fit-option-fields-top__title"><?= esc_html($fields['name']) ?></h3>
-                    <p class="fit-option-fields-top__description"><?= esc_html($commonDetails['description']) ?></p>
-                </div>
-                <?php
-                // Render child options if not numeric key
-                if (!is_numeric($key)) {
-                    render_fit_option_fields($fields);
-                } else { ?>
-                    <div class="fit-option-fields__main">
-                        <?php foreach ($fields['option'] as $field): ?>
-                            <label class="fit-option-fields__item">
-                                <input type="radio" name="<?= esc_attr($commonDetails['name']) ?>"
-                                    value="<?= esc_attr($field['name']) ?>">
-                                <span><?= esc_html($field['name']) ?></span>
-                                <?= wp_get_attachment_image($field['feature_img_id'], 'thumbnail') ?>
-                            </label>
-                        <?php endforeach; ?>
+if (!isset($render_swiper_slides) && empty($render_swiper_slides)) {
+    $render_swiper_slides = function($chooseDetails, $commonDetails)  {
+        if (!isset($chooseDetails) && empty($chooseDetails))
+            return;
+        $fieldName = sanitize_title($commonDetails['name']);
+        foreach ($chooseDetails as $key => $fields): 
+            $inputFieldName = $fieldName . '-' . sanitize_title($fields['name']);
+        ?>
+            <div class="swiper-slide">
+                <div class="product-details__fit-option-fields fit-option-fields">
+                    <div class="fit-option-fields__top">
+                        <h3 class="fit-option-fields-top__title">
+                            <?= esc_html(array_key_exists('name', $fields) ? $fields['name'] : '') ?>
+                        </h3>
+                        <p class="fit-option-fields-top__description"><?= esc_html($commonDetails['description']) ?></p>
                     </div>
-                <?php } ?>
+                    <?php
+                    // Render child options if not numeric key
+                    if (!is_numeric($key)) {
+                        render_fit_option_fields($fields, $fieldName);
+                    } else {
+                        $fieldClass = ['fit-option-fields__main', 'customize-popup__step-options'];
+                        if (is_array($fields['option']) && count($fields['option']) >= 4) {
+                            $fieldClass[] = 'customize-popup__step-options--flex-start';
+                        } ?>
+                        <div class="<?= esc_attr(implode(' ', $fieldClass)) ?>">
+                            <?php for ($i = 0; $i < count($fields['option']); $i++): 
+                                $field = $fields['option'][$i];
+                                $optionPrice = $field['price'] ?: '';    
+                            ?>
+                                <label class="fit-option-fields__item step-option">
+                                    <input type="radio" name="<?= esc_attr($inputFieldName) ?>"
+                                        value="<?= esc_attr($field['name']) ?>" <?= $i === 0 ? esc_attr('checked') : '' ?>>
+                                    <span class="step-option__name"><?= esc_html($field['name']) ?></span>
+                                    <?= wp_get_attachment_image($field['feature_img_id'], 'medium', false, ['class' => 'step-option__feature-img']) ?>
+                                    <div class="step-option__meta">
+                                        <span class="step-option__price"><?= $optionPrice ?: '' ?></span>
+                                        <span class="step-option__state material-symbols-outlined">check</span>
+                                    </div>
+                                </label>
+                            <?php endfor; ?>
+                        </div>
+                    <?php } ?>
+                </div>
             </div>
-        </div>
-    <?php endforeach;
+        <?php endforeach;
+    };
 }
 
 ?>
 
-<div class="product-details-custom-option__container">
+<div class="product-details-custom-option__container" id="<?= sanitize_title($chooseDetailsCommon['name']) ?>">
+    <a class="product-details-custom-option__title" href="javascript:void(0);">
+        <h3><?= esc_html($chooseDetailsCommon['name']) ?></h3>
+        <p>Click here to start customize.</p>
+    </a>
     <div class="swiper swiper-product-details-custom-option">
-        <h3 class="product-details-custom-option__title"><?= esc_html($chooseDetailsCommon['name']) ?></h3>
         <div class="swiper-wrapper">
-            <?php render_swiper_slides($chooseDetails, $chooseDetailsCommon); ?>
+            <?php $render_swiper_slides($chooseDetails, $chooseDetailsCommon); ?>
         </div>
         <div class="navigation">
             <div class="navigation__prev">PREV</div>
