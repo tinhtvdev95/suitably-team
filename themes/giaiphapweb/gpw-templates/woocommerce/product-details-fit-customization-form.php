@@ -4,6 +4,7 @@
  * * Template for display product details Fit and Customization form.
  */
 global $product;
+$currencySymbol = get_woocommerce_currency_symbol();
 
 $steps = get_field('steps', 'customize_product_form');
 $processSteps = array_map(function ($step) {
@@ -55,15 +56,25 @@ $processSteps = array_map(function ($step) {
           <div class="customize-popup__step-options">
             <?php for ($j = 0; $j < count($options); $j++):
               $option = $options[$j];
+
               $featureImgID = $option['feature_img_id'];
               $inputName = $stepID;
               $inputValue = sanitize_title($option['name']);
               $inputText = $option['name'];
+              $optionPrice = $option['price'];
+              $optionClass = ['step-option'];
+              if ($j === 0) {
+                $optionClass[] = 'step-option--selected';
+              }
               ?>
-              <label class="step-option">
+              <label class="<?= esc_attr( implode( ' ', $optionClass ) ) ?>">
                 <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>">
-                <span><?= esc_html($inputText) ?></span>
-                <?= wp_get_attachment_image($featureImgID, 'large_medium', false) ?>
+                <span class="step-option__name"><?= esc_html($inputText) ?></span>
+                <?= wp_get_attachment_image($featureImgID, 'large_medium', false, [ 'class' => 'step-option__feature-img' ]) ?>
+                <div class="step-option__meta">
+                  <span class="step-option__price"><?= $optionPrice ? "$optionPrice $currencySymbol" : '' ?></span>
+                  <span class="step-option__state material-symbols-outlined">check</span>
+                </div>
               </label>
             <?php endfor; ?>
           </div>

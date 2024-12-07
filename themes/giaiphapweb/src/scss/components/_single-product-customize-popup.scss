@@ -1,6 +1,7 @@
 @use '../abstracts/' as *;
 @use '../components/buttons';
 
+
 /*
 ================================
 =        Customize Popup       =
@@ -126,27 +127,49 @@
       }
 
       .step-option {
+        --step-option-bg-clr: var(--gray-color-300);
+        --step-option-checked-opacity: 0;
         flex: 0 0 var(--option-width);
         display: grid;
         grid-template-rows: auto 1fr auto;
         grid-template-columns: 100%;
         gap: .625rem;
-        border: .0625rem solid var(--gray-color-500);
+        border: .0625rem solid var(--step-option-bg-clr);
 
         input {
           display: none;
         }
 
-        img {
+        &__feature-img {
           display: block;
           margin-inline: auto;
         }
 
-        span {
+        &__name {
           text-align: center;
-          background: var(--gray-color-500);
+          padding: .625rem;
+        }
+        
+        &__name, &__meta {
+          background: var(--step-option-bg-clr);
           color: #fff;
-          padding-block: .3125rem;
+          line-height: 1;
+        }
+
+        &__meta {
+          padding: .3125rem .625rem;
+          
+          @include d-flex($justify: space-between, $align: center);
+        }
+        
+        &__state {
+          font-size: 1.25rem;
+          opacity: var(--step-option-checked-opacity);
+        }
+        
+        &--selected {
+          --step-option-bg-clr: var(--gray-color-500);
+          --step-option-checked-opacity: 1;
         }
       }
 
