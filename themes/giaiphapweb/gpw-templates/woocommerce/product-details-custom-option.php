@@ -58,7 +58,9 @@ if (!function_exists('render_fit_option_fields')) {
                         $optionPrice = $option['price'] ?? '';
                         ?>
                         <label class="fit-option-fields__item step-option">
-                            <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($option['name']) ?>" <?= $i === 0 ? esc_attr('checked') : '' ?>>
+                            <input type="radio" name="<?= esc_attr($inputName) ?>" 
+                                value="<?= esc_attr($option['name']) ?>" 
+                                <?= $i === 0 ? esc_attr('checked') : '' ?> data-slug="<?= esc_attr(sanitize_title($option['name'])) ?>">
                             <span class="step-option__name"><?= esc_html($option['name']) ?></span>
                             <?= wp_get_attachment_image($option['feature_img_id'], 'medium', false, ['class' => 'step-option__feature-img']) ?>
                             <div class="step-option__meta">
