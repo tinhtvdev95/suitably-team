@@ -9,23 +9,24 @@ class ProductController
      * @param array $queryArgs Custom query arguments for WP_Query.
      * @return array List of products with essential data.
      */
-    private function getProducts(array $queryArgs)
+    private function getProducts(array $queryArgs, $subCategoryName = '')
     {
         $query = new \WP_Query($queryArgs);
-        $products_data = array();
+        $products_data = [];
 
         if ($query->have_posts()) {
             while ($query->have_posts()) {
                 $query->the_post();
                 $productId = get_the_ID();
                 $product = wc_get_product($productId);
-                $products_data[] = array(
+                $products_data[] = [
+                    'category' => $subCategoryName,
                     'id' => $productId,
                     'title' => get_the_title(),
                     'link' => get_permalink(),
                     'image' => get_the_post_thumbnail($productId, 'medium'),
                     'price' => $product ? $product->get_price_html() : '',
-                );
+                ];
             }
         }
 
@@ -54,6 +55,82 @@ class ProductController
         );
 
         return $this->getProducts($args);
+    }
+
+    /**
+     * Get 4 lapel to category products
+     * 
+     * @return mixed
+     */
+    public function getProductsFromSubcategories($gender)
+    {
+        if (empty($gender) || !is_string($gender)) {
+            return [];
+        }
+
+        $parentCategory = get_term_by('slug', $gender, 'product_cat');
+        if (!$parentCategory) {
+            return [];
+        }
+
+        $lapelCategorySlug = ($gender === 'male') ? 'lapel-style-male' : 'lapel-style-female';
+        $lapelCategory = get_term_by('slug', $lapelCategorySlug, 'product_cat');
+        if (!$lapelCategory || $lapelCategory->parent !== $parentCategory->term_id) {
+            return [];
+        }
+
+        $subCategorySlugs = ($gender === 'male')
+            ? [
+                'the-notch-lapel-male',
+                'the-shawl-lapel-male',
+                'the-peak-lapel-male',
+                'the-tuxedo-lapel-male',
+            ]
+            : [
+                'the-notch-lapel-female',
+                'the-shawl-lapel-female',
+                'the-peak-lapel-female',
+                'the-tuxedo-lapel-female',
+            ];
+
+
+        $subCategories = get_terms(
+            [
+                'taxonomy' => 'product_cat',
+                'hide_empty' => true,
+                'parent' => $lapelCategory->term_id,
+                'slug' => $subCategorySlugs,
+            ]
+        );
+
+        $products = [];
+
+        if (!empty($subCategories) && !is_wp_error($subCategories)) {
+            foreach ($subCategories as $subcategory) {
+                $queryArgs = [
+                    'post_type' => 'product',
+                    'posts_per_page' => 1,
+                    'post_status' => 'publish',
+                    'tax_query' => [
+                        [
+                            'taxonomy' => 'product_cat',
+                            'field' => 'term_id',
+                            'terms' => $subcategory->term_id,
+                            'include_children' => false,
+                        ],
+                    ],
+                    'orderby' => 'date',
+                    'order' => 'ASC',
+                ];
+
+                // dump($subcategory->name);
+
+                $subcategoryProducts = $this->getProducts($queryArgs, $subcategory->name);
+                $products = array_merge($products, $subcategoryProducts);
+            }
+        }
+
+        return $products;
     }
 
     /**
@@ -159,7 +236,7 @@ class ProductController
                 [$newNameArray => $fitLevelArrays]
             );
         }
-        
+
         return $optionFields;
     }
 }
