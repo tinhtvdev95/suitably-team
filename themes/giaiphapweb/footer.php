@@ -7,6 +7,10 @@
  */
 
 global $flatsome_opt;
+
+$address = get_field('address', 'company_info');
+$phone = get_field('phone_number', 'company_info');
+$email = get_field('email', 'company_info');
 ?>
 
 </main>
@@ -18,7 +22,7 @@ global $flatsome_opt;
 				<div class="contact-form__header">
 					<h3 class="contact-form__title">We service all of Australia and are more than happy to help you with
 						all your suiting needs. Get in touch!</h3>
-					<p class="contact-form__sub-title">0708 245 789 | info@giaiphapweb.vn | 178 An Dương Vương - P.Thanh Hà - TP.Hội An - T.Quảng Nam</p>
+					<p class="contact-form__sub-title"><?=  $phone ?> | <?= $email ?> | <?=  $address ?></p>
 				</div>
 				<div class="contact-form__main">
 					<div class="contact-form__group-top">

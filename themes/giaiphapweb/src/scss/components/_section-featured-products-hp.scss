@@ -4,6 +4,10 @@ $whiteColor: #fff;
 
 .featured-product {
     margin-bottom: 2rem;
+    .product-detail__title {
+        @include line-clamp(1.6, 1.2rem, 1.2, center);
+        height: 5rem;
+    }
     &__top {
         .text__title {
             font-family: "Raleway", sans-serif;
@@ -37,8 +41,9 @@ $whiteColor: #fff;
         }
 
         &__main {
-            grid-template-columns: repeat(4, 25%);
-
+            grid-template-columns: repeat(4, 24.5%);
+            gap: 1rem;
+            margin-top: 1rem;
             .gpw-button {
                 font-size: .9rem;
             }
