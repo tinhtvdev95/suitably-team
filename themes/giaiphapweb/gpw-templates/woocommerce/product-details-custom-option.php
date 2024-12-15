@@ -7,8 +7,13 @@ use \gpw\controller\ProductController;
  * Template for displaying product details custom option
  */
 
+global $product;
+
+
 // Initialize Product Controller
 $productController = new ProductController();
+
+$categoriesId = $productController->getCategoriesOfProduct($product);
 
 // Get options index
 $optionIndex = $args['optionIndex'] ?? 0;
@@ -25,13 +30,15 @@ if ($chooseDetailsCommon['children']) {
         }
     }
     $chooseDetails = $productController->processProductOptions($chooseDetailsCommon['children'], $fitLevel);
+
+
 } else {
     $chooseDetails = [];
 }
 
 // Function to render fit option fields
 if (!function_exists('render_fit_option_fields')) {
-    function render_fit_option_fields($fields, $parentName) 
+    function render_fit_option_fields($fields, $parentName)
     {
         if (!$fields)
             return;
@@ -68,13 +75,13 @@ if (!function_exists('render_fit_option_fields')) {
 
 // Function to render swiper slides
 if (!isset($render_swiper_slides) && empty($render_swiper_slides)) {
-    $render_swiper_slides = function($chooseDetails, $commonDetails)  {
+    $render_swiper_slides = function ($chooseDetails, $commonDetails) use ($categoriesId) {
         if (!isset($chooseDetails) && empty($chooseDetails))
             return;
         $fieldName = sanitize_title($commonDetails['name']);
-        foreach ($chooseDetails as $key => $fields): 
+        foreach ($chooseDetails as $key => $fields):
             $inputFieldName = $fieldName . '-' . sanitize_title($fields['name']);
-        ?>
+            ?>
             <div class="swiper-slide">
                 <div class="product-details__fit-option-fields fit-option-fields">
                     <div class="fit-option-fields__top">
@@ -93,13 +100,15 @@ if (!isset($render_swiper_slides) && empty($render_swiper_slides)) {
                             $fieldClass[] = 'customize-popup__step-options--flex-start';
                         } ?>
                         <div class="<?= esc_attr(implode(' ', $fieldClass)) ?>">
-                            <?php for ($i = 0; $i < count($fields['option']); $i++): 
+                            <?php for ($i = 0; $i < count($fields['option']); $i++):
                                 $field = $fields['option'][$i];
-                                $optionPrice = $field['price'] ?: '';    
-                            ?>
+                                $optionPrice = $field['price'] ?: '';
+                                $relatedCategoryId = $field['related_category'];
+                                $checked = in_array($relatedCategoryId, $categoriesId);
+                                ?>
                                 <label class="fit-option-fields__item step-option">
-                                    <input type="radio" name="<?= esc_attr($inputFieldName) ?>"
-                                        value="<?= esc_attr($field['name']) ?>" <?= $i === 0 ? esc_attr('checked') : '' ?>>
+                                    <input type="radio" name="<?= esc_attr($inputFieldName) ?>" value="<?= esc_attr($field['name']) ?>"
+                                        <?= $checked ? esc_attr('checked') : '' ?>>
                                     <span class="step-option__name"><?= esc_html($field['name']) ?></span>
                                     <?= wp_get_attachment_image($field['feature_img_id'], 'medium', false, ['class' => 'step-option__feature-img']) ?>
                                     <div class="step-option__meta">

@@ -5,13 +5,20 @@
 defined('ABSPATH') || exit;
 
 // Load autoload
-if(file_exists(__DIR__ . '/vendor/autoload.php')) {
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
   require_once __DIR__ . '/vendor/autoload.php';
 }
 
 // Register services
-if(class_exists('gpweb\\inc\\ThemeInit')) {
+if (class_exists('gpweb\\inc\\ThemeInit')) {
   gpweb\inc\ThemeInit::register_services();
 }
 
-include get_theme_file_path('controller/product/ProductController.php');
+$controllerPaths = [
+  'controller/product/ProductController.php',
+  'controller/post/PostController.php'
+];
+
+foreach ($controllerPaths as $path) {
+  include get_theme_file_path($path);
+}

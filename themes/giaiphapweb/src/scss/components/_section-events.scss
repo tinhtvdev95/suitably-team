@@ -1,0 +1,56 @@
+@use '../abstracts/' as *;
+
+/*
+==========================
+=         Events         =
+==========================
+*/
+
+$whiteColor: #fff;
+
+.events {
+    position: relative;
+    background: var(--gpw-color-500);
+
+    &__content {
+        @include grid(repeat(2, 1fr), auto, 3rem);
+
+        &-right {
+            @include d-flex(column, center);
+        }
+
+        &-item {
+
+            h5,
+            h2,
+            ul,
+            h4,
+            .event-button-wrapper a,
+            p.notice {
+                color: $whiteColor;
+            }
+
+            width: 80%;
+
+            .event-button-wrapper {
+                width: 100%;
+                a.normal-button {
+                    padding: 1rem 2rem;
+                    border: 1px solid $whiteColor;
+                }
+                @include d-flex($justify: center, $colGap: 1rem);
+            }
+            .notice {
+                width: 100%;
+                @include d-flex($justify: center);
+            }
+
+            @include d-flex(column, $colGap: 1rem);
+
+        }
+    }
+
+    .content-item__title {
+        font-size: to-rem(40);
+    }
+}
