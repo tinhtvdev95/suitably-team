@@ -3,8 +3,16 @@
  * @package GiapPhapWeb_Theme
  * * Template for display product details Fit and Customization form.
  */
+
+use gpw\controller\ProductController;
+
+$productController = new ProductController();
+
+
 global $product;
 $currencySymbol = get_woocommerce_currency_symbol();
+
+$categoriesProductName = $productController->getCategoriesOfProduct($product);
 
 $steps = get_field('steps', 'customize_product_form');
 $processSteps = array_map(function ($step) {
@@ -56,9 +64,10 @@ $stepActiveID = 0;
         $stepID = sanitize_title($step['name']);
         ?>
         <div class="<?= implode(' ', $class) ?>" id="<?= esc_attr($stepID) ?>">
-          <?php if ($i !== 3): ?>
+          <?php if ($i !== 2): ?>
             <h3 class="customize-popup__step-title"><?= esc_html($stepTitle) ?></h3>
-            <div class="customize-popup__step-options <?= count($options) >= 4 ? esc_attr('customize-popup__step-options--flex-start') : '' ?>">
+            <div
+              class="customize-popup__step-options <?= count($options) >= 4 ? esc_attr('customize-popup__step-options--flex-start') : '' ?>">
               <?php for ($j = 0; $j < count($options); $j++):
                 $option = $options[$j];
 
@@ -70,7 +79,7 @@ $stepActiveID = 0;
                 $optionClass = ['step-option'];
                 ?>
                 <label class="<?= esc_attr(implode(' ', $optionClass)) ?>">
-                  <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>" <?= $j === 0 ? 'checked' : '' ?> data-slug="<?= esc_attr( sanitize_title($inputValue) ) ?>">
+                  <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>" <?= $j === 0 ? 'checked' : '' ?> data-slug="<?= esc_attr(sanitize_title($inputValue)) ?>">
                   <span class="step-option__name"><?= esc_html($inputText) ?></span>
                   <?= wp_get_attachment_image($featureImgID, 'large_medium', false, ['class' => 'step-option__feature-img']) ?>
                   <div class="step-option__meta">

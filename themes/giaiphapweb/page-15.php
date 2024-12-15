@@ -39,6 +39,7 @@ get_header();
   }
   ?>
   <?php get_template_part('gpw-templates/homepage/why-us-section'); ?>
+  <?php get_template_part('gpw-templates/global/section-events'); ?>
   <?php get_template_part('gpw-templates/global/section-new-products'); ?>
   <?php get_template_part('gpw-templates/global/section-google-map-review'); ?>
   <?php get_template_part('gpw-templates/global/section-contact-info'); ?>

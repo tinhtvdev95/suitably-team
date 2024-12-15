@@ -58,9 +58,10 @@ class ProductController
     }
 
     /**
-     * Get 4 lapel to category products
+     * Retrieve products from subcategories based on gender
      * 
-     * @return mixed
+     * @param string $gender The gender slug ('male' or 'female') used to identify the parent category.
+     * @return array an array of products from the subcategories or an empty array if no product are found.
      */
     public function getProductsFromSubcategories($gender)
     {
@@ -238,5 +239,22 @@ class ProductController
         }
 
         return $optionFields;
+    }
+
+    public function getCategoriesOfProduct($product)
+    {
+        if ($product) {
+            $categories = wp_get_post_terms($product->get_id(), 'product_cat');
+
+            $categoriesID = [];
+
+            if (!is_wp_error($categories) && !empty($categories)) {
+                foreach ($categories as $category) {
+                    $categoriesID[] = $category->term_id;
+                }
+            }
+            return $categoriesID;
+        }
+        return 'not found product';
     }
 }
