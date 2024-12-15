@@ -10,7 +10,10 @@ $productController = new ProductController();
 
 
 global $product;
-$currencySymbol = get_woocommerce_currency_symbol();
+
+const FABRIC = 'choose-fabric';
+const DETAIL = 'choose-details';
+const MAX_OPTIONS_SIZE = 4;
 
 $categoriesProductName = $productController->getCategoriesOfProduct($product);
 
@@ -61,43 +64,67 @@ $stepActiveID = 0;
         }
         $options = $step['options'];
         $stepTitle = $step['name'];
+        $stepSlug = sanitize_title($step['name']);
         $stepID = sanitize_title($step['name']);
         ?>
         <div class="<?= implode(' ', $class) ?>" id="<?= esc_attr($stepID) ?>">
-          <?php if ($i !== 2): ?>
+          <?php if ($stepSlug === DETAIL): ?>
             <h3 class="customize-popup__step-title"><?= esc_html($stepTitle) ?></h3>
-            <div
-              class="customize-popup__step-options <?= count($options) >= 4 ? esc_attr('customize-popup__step-options--flex-start') : '' ?>">
-              <?php for ($j = 0; $j < count($options); $j++):
-                $option = $options[$j];
-
-                $featureImgID = $option['feature_img_id'];
-                $inputName = $stepID;
-                $inputValue = $option['name'];
-                $inputText = $option['name'];
-                $optionPrice = $option['price'];
-                $optionClass = ['step-option'];
-                ?>
-                <label class="<?= esc_attr(implode(' ', $optionClass)) ?>">
-                  <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>" <?= $j === 0 ? 'checked' : '' ?> data-slug="<?= esc_attr(sanitize_title($inputValue)) ?>">
-                  <span class="step-option__name"><?= esc_html($inputText) ?></span>
-                  <?= wp_get_attachment_image($featureImgID, 'large_medium', false, ['class' => 'step-option__feature-img']) ?>
-                  <div class="step-option__meta">
-                    <span class="step-option__price"><?= $optionPrice ? "$optionPrice $currencySymbol" : '' ?></span>
-                    <span class="step-option__state material-symbols-outlined">check</span>
-                  </div>
-                </label>
-              <?php endfor; ?>
-            </div>
-          <?php else:
-            for ($optionID = 0; $optionID < count($step['options']); $optionID++) {
+            <?php for ($optionID = 0; $optionID < count($step['options']); $optionID++) {
               get_template_part(
                 'gpw-templates/woocommerce/product-details',
                 'custom-option',
                 ['optionIndex' => $optionID, 'chooseDetailsCommon' => $step['options'][$optionID]]
               );
-            }
-          endif ?>
+            }         
+          else: ?>
+            <h3 class="customize-popup__step-title"><?= esc_html($stepTitle) ?></h3>
+            <div class="customize-popup__step-options <?= count($options) >= MAX_OPTIONS_SIZE ? esc_attr('customize-popup__step-options--flex-start') : '' ?>">
+              <?php 
+              $children = [];
+              for ($j = 0; $j < count($options); $j++):
+                $option = $options[$j];
+
+                $featureImgID = $option['feature_img_id'];
+                $inputName = $stepID;
+                $inputValue = $option['name'];
+                $inputSlug = sanitize_title($inputValue);
+                $inputText = $option['name'];
+                $optionPrice = $option['price'];
+                $optionClass = ['step-option'];
+
+                $children[$inputSlug] = $option['children'];
+                ?>
+                <label class="<?= esc_attr(implode(' ', $optionClass)) ?>" <?= $stepSlug == FABRIC ? 'is-fabric' : '' ?>>
+                  <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>" <?= $j === 0 ? 'checked' : '' ?> data-slug="<?= esc_attr($inputSlug) ?>">
+                  <span class="step-option__name"><?= esc_html($inputText) ?></span>
+                  <?= wp_get_attachment_image($featureImgID, 'large_medium', false, ['class' => 'step-option__feature-img']) ?>
+                  <div class="step-option__meta">
+                    <span class="step-option__price"><?= $optionPrice ?? '' ?></span>
+                    <span class="step-option__state material-symbols-outlined">check</span>
+                  </div>
+                </label>
+              <?php endfor ?>
+            </div>
+            <?php if ( $stepSlug === FABRIC ) : ?>
+            <div class="customize-popup__step-details">
+              <?php 
+              $fabricIndex = 0; 
+              foreach( $children as $key => $child ) {
+                $args = [
+                  'isActive' => $fabricIndex++ === 0,
+                  'options' => $child,
+                  'parentSlug' => $key
+                ];
+                get_template_part(
+                  'gpw-templates/woocommerce/product-details',
+                  'fabric-options',
+                  $args
+                );
+              } ?>
+            </div>
+            <?php endif ?>
+          <?php endif ?>
           <button type="button" class="customize-popup__step-continue-btn gpw-button gpw-button__gradient"
             data-option-name="<?= esc_attr($stepID) ?>">Continue</button>
         </div>

@@ -1,11 +1,15 @@
 export default class StepsAndOptionSelection {
-  constructor(customizeFormData) {
+  constructor(customizeFormData, apiObj) {
+    this.apiObj = apiObj;
+
     this.stepsNavItemsSelector = 'customize-popup__nav-item';
     this.navItemActiveClass = `${this.stepsNavItemsSelector}--active`;
     this.navItemDisabledClass = `${this.stepsNavItemsSelector}--disabled`;
 
     this.stepsContentSelector = 'customize-popup__step';
     this.stepContentActiveClass = `${this.stepsContentSelector}--active`;
+
+    this.stepTitleSelector = 'customize-popup__step-title';
 
     this.stepOptionsSelector = 'step-option';
     this.stepContentContinueBtnSelector = 'customize-popup__step-continue-btn';
@@ -20,9 +24,14 @@ export default class StepsAndOptionSelection {
       set: (target, key, value) => {
         const isKeyExist = Object.prototype.hasOwnProperty.call(target, key);
         if (key === 'choose-options' && isKeyExist) {
+          // Hide all product details custom options if user choose another option
           document.querySelectorAll(`.${this.productDetailsCustomOptionActiveClass}`).forEach(container => {
             container.classList.remove(this.productDetailsCustomOptionActiveClass);
           });
+          // Clear all data in 'choose-details' if 'choose-options' is changed and 'choose-details' is exist
+          if (Object.prototype.hasOwnProperty.call(target, 'choose-details')) {
+            target['choose-details'] = {};
+          }
         }
         target[key] = value;
         return true;
@@ -40,6 +49,7 @@ export default class StepsAndOptionSelection {
     this.stepOptions = document.querySelectorAll(`.${this.stepOptionsSelector}`);
     this.productDetailsCustomOptions = document.querySelectorAll(`.${this.productDetailsCustomOptionSelector}`);
     this.productDetailsCustomTitles = document.querySelectorAll(`.${this.productDetailsCustomOptionTitleSelector}`);
+    this.form = document.querySelector('.customize-popup__fit-customization');
   }
 
   addEventListeners() {
@@ -58,6 +68,11 @@ export default class StepsAndOptionSelection {
     });
 
     this.stepOptions.forEach(stepOption => {
+      if(stepOption.hasAttribute('is-fabric')) {
+        stepOption.addEventListener('click', event => {
+          this.handleFabricTypeSelection(event, stepOption);
+        });
+      }
       stepOption.addEventListener('click', event => {
         this.handleSelectingOption(event, stepOption);
       });
@@ -68,6 +83,19 @@ export default class StepsAndOptionSelection {
         this.handleProductDetailsCustomOptionTitleClick(event, title);
       });
     });
+
+    this.form.addEventListener('submit', this.handleSubmitForm.bind(this));
+  }
+
+  async handleSubmitForm(event) {
+    event.preventDefault();
+    const formData = new FormData(this.form);
+    const response = await fetch(this.apiObj.url, {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await response.json();
+    console.log(data);
   }
 
   handleSelectingOption(event, stepOption) {
@@ -86,30 +114,52 @@ export default class StepsAndOptionSelection {
     input.setAttribute('checked', '1');
   }
 
+  handleFabricTypeSelection(event, stepOption) {
+    if (event.target.tagName === 'INPUT') {
+      event.stopPropagation();
+      return;
+    }
+    const input = stepOption.querySelector('input');
+    const target = input.dataset.slug;
+    document.querySelector('.fabric-options--active')?.classList.remove('fabric-options--active');
+    document.querySelector(`#${target}`).classList.add('fabric-options--active');
+  }
+
   handleContinueStep(event, stepContent) {
     event.preventDefault();
     const NEXT_STEP_INDEX = 1;
 
-    const stepOptions = stepContent.querySelectorAll(`.${this.stepOptionsSelector} input`);
+    const stepTitle = stepContent.querySelector(`.${this.stepTitleSelector}`).textContent;
+    const currentStepName = stepContent.getAttribute('id');
+    let stepOptions = currentStepName !== 'choose-details' ? stepContent.querySelectorAll(`.${this.stepOptionsSelector} input`) : stepContent.querySelectorAll(`.${this.productDetailsCustomOptionActiveClass} .${this.stepOptionsSelector} input`);
   
     if (!this.validateStepOptions(stepOptions)) return;
 
     stepOptions.forEach(option => {
       if (option.hasAttribute('checked')) {
-        this.addDataToFormData(option.getAttribute('name'), option.value, option.dataset.slug);
+        const optionName = option.getAttribute('name');
+        if(currentStepName === 'choose-details') {
+          // Create an object for 'choose-details' if it's not exist in customizeFormData
+          !this.customizeFormData.hasOwnProperty('choose-details') && (this.customizeFormData['choose-details'] = {});
+          const detailTitle = stepContent.querySelector('product-details-custom-option__title')
+          this.addDataToFormData(optionName, stepTitle, option.value, option.dataset.slug, 'choose-details', stepTitle);
+        }
+        else if (currentStepName === 'choose-fabric' && optionName === 'color-and-style') {
+          this.addDataToFormData(optionName, stepTitle, option.value, option.dataset.slug, 'choose-fabric', stepTitle);
+        } 
+        else {
+          this.addDataToFormData(optionName, stepTitle, option.value, option.dataset.slug);
+        }
       }
     });
-
-    // console.log(this.customizeFormData);
-
+    
     const nextStepIndex = Array.from(this.stepsContent).indexOf(stepContent) + NEXT_STEP_INDEX;
     const nextStepNavItem = this.stepsNavItems[nextStepIndex];
     const nextStepNavItemButton = nextStepNavItem.querySelector('a');
     const nextStepContent = this.stepsContent[nextStepIndex];
-    const stepName = nextStepContent.getAttribute('id');
+    const nextStepName = nextStepContent.getAttribute('id');
 
-    if(stepName === 'choose-details') {
-      console.log(this.customizeFormData['choose-options']);
+    if(nextStepName === 'choose-details') {
       switch(this.customizeFormData['choose-options'].slug) {
         case 'custom-suits':
           this.setActiveForProductDetailsCustomOption(['custom-jacket', 'pants', 'waistcoat']);
@@ -133,8 +183,12 @@ export default class StepsAndOptionSelection {
           this.setActiveForProductDetailsCustomOption(['custom-jacket', 'pants', 'waistcoat']);
           break;
       }
+    } else if(nextStepName === 'confirm') {
+      // for loop an object
+      this.renderReviewDataBeforeSubmit();
     }
-
+    
+    console.log(this.customizeFormData);
     this.switchActiveStep(nextStepNavItem, nextStepNavItemButton, true);
   }
 
@@ -153,10 +207,12 @@ export default class StepsAndOptionSelection {
     let lastInputName = '';
     for (const option of stepOptions) {
       const currentInputName = option.getAttribute('name');
-      if (lastInputName !== option.getAttribute('name')) {
-        if (isValid) {
+      if (lastInputName != '' && lastInputName !== option.getAttribute('name')) {
+        if (!isValid) {
           break;
         }
+        lastInputName = option.getAttribute('name');
+      } else if(lastInputName === '') {
         lastInputName = option.getAttribute('name');
       }
       if (currentInputName === lastInputName && option.hasAttribute('checked')) {
@@ -166,11 +222,24 @@ export default class StepsAndOptionSelection {
     return isValid;
   }
 
-  addDataToFormData(key, value, slug) {
-    this.customizeFormData[key] = {
-      value,
-      slug,
-    };
+  addDataToFormData(key, name, selectedValue, slug, parentKey = false, parentName = false) {
+    if( parentKey ) {
+      this.customizeFormData[parentKey] = {
+        ...this.customizeFormData[parentKey],
+        name: parentName,
+        [key]: {
+          name,
+          selectedValue,
+          slug,
+        }
+      };
+    } else {
+      this.customizeFormData[key] = {
+        name,
+        selectedValue,
+        slug,
+      };
+    }
   }
 
   handleSwitchStepWithNavItems(event, parent, _self) {
@@ -203,6 +272,23 @@ export default class StepsAndOptionSelection {
   handleProductDetailsCustomOptionTitleClick(event, _self) {
     const parent = _self.parentElement;
     parent.classList.toggle(this.productDetailsCustomOptionShowChildrenClass);
+  }
+
+  renderReviewDataBeforeSubmit() {
+    console.log(this.customizeFormData);
+    const reviewDataContainer = document.querySelector('.customize-popup__review-selection');
+    reviewDataContainer.innerHTML = '';
+
+    for(const [key, stepSelection] of Object.entries(this.customizeFormData)) {
+      const reviewDataItemEl = document.createElement('div');
+      reviewDataItemEl.classList.add('review-selection__step');
+      if( key !== 'choose-details' ) {
+        reviewDataItemEl.textContent = `${stepSelection.name} - ${stepSelection.selectedValue}`;
+      } else {
+
+      }
+      reviewDataContainer.appendChild(reviewDataItemEl);
+    }
   }
 }
 

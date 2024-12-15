@@ -44,8 +44,8 @@
       padding: 0;
       margin: 0;
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 1.25rem;
+      right: 1.25rem;
       line-height: 1;
       
       .material-symbols-outlined {
@@ -129,6 +129,14 @@
         text-align: center;
       }
 
+      .fabric-options {
+        display: none;
+
+        &--active {
+          display: flex;
+        }
+      }
+
       &-options {
         @include d-flex($justify: center, $wrap: wrap, $colGap: var(--options-gap));   
         
@@ -145,6 +153,7 @@
         grid-template-rows: auto 1fr auto;
         grid-template-columns: 100%;
         gap: .625rem;
+        margin-bottom: 0;
         border: .0625rem solid var(--step-option-bg-clr);
         cursor: pointer;
         transition: border-color 300ms;
@@ -156,6 +165,9 @@
         &__feature-img {
           display: block;
           margin-inline: auto;
+          max-width: 9.375rem;
+          width: 100%;
+          aspect-ratio: 1;
         }
 
         &__name {
@@ -207,6 +219,6 @@
   }
 
   @include container-query(content, md, gt) {
-    width: 90%;
+    max-width: var(--pc-max-width);
   }
 }

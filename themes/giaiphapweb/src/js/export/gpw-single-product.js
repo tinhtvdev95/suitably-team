@@ -9,5 +9,5 @@ document.addEventListener('DOMContentLoaded', function () {
   const singleProductGallery = new SingleProductGallery();
   const sliderSingleProductCustomizeOption = new SingleProductCustomizeOption();
   const customizePopup = new CustomizePopupController();
-  const stepsAndOptionSelection = new SingleProductStepOptionsSelection(customizeFormData);
+  const stepsAndOptionSelection = new SingleProductStepOptionsSelection(customizeFormData, apiObj);
 });
