@@ -35,34 +35,40 @@ $stepActiveID = 0;
   <form class="customize-popup__fit-customization fit-customization" method="POST">
     <?php wp_nonce_field('fit_customization', 'fit_customization_nonce') ?>
     <input type="hidden" name="action" value="fit_customization">
+    <input type="hidden" name="total_price" value="<?= esc_attr($product->get_price() ?? 0) ?>">
     <aside class="customize-popup__process-step">
-      <h3 class="customize-popup__process-step-title">Process steps</h3>
-      <ul class="customize-popup__nav">
-        <?php for ($i = 0; $i < count($processSteps); $i++):
-          $step = $processSteps[$i];
-          $class = ['customize-popup__nav-item'];
-
-          $class[] = $i === $stepActiveID ? 'customize-popup__nav-item--active' : 'customize-popup__nav-item--disabled';
-          ?>
-          <li class="<?= esc_attr(implode(' ', $class)) ?>">
+      <div class="customize-popup__process-step-inner">
+        <h3 class="customize-popup__process-step-title">Process steps</h3>
+        <ul class="customize-popup__nav">
+          <?php for ($i = 0; $i < count($processSteps); $i++):
+            $step = $processSteps[$i];
+            $class = ['customize-popup__nav-item'];
+            $class[] = $i === $stepActiveID ? 'customize-popup__nav-item--active' : 'customize-popup__nav-item--disabled';
+            ?>
+            <li class="<?= esc_attr(implode(' ', $class)) ?>">
+              <span class="material-symbols-outlined">check_circle</span>
+              <a href="javascript:void(0);" data-target="<?= esc_attr($step['slug']) ?>"><?= esc_html($step['name']) ?></a>
+            </li>
+          <?php endfor; ?>
+          <li class="customize-popup__nav-item customize-popup__nav-item--disabled">
             <span class="material-symbols-outlined">check_circle</span>
-            <a href="javascript:void(0);" data-target="<?= esc_attr($step['slug']) ?>"><?= esc_html($step['name']) ?></a>
+            <a href="javascript:void(0);" data-target="confirm">Confirm</a>
           </li>
-        <?php endfor; ?>
-        <li class="customize-popup__nav-item customize-popup__nav-item--disabled">
-          <span class="material-symbols-outlined">check_circle</span>
-          <a href="javascript:void(0);" data-target="confirm">Confirm</a>
-        </li>
-      </ul>
+        </ul>
+      </div>
     </aside>
     <div class="customize-popup__detail-step">
+      <header class="customize-popup__header">
+        <h2 class="customize-popup__product-title"><?= esc_html( $product->get_title() ) ?></h2>
+        <div class="customize-popup__product-price"><?= esc_html( get_woocommerce_currency_symbol() . $product->get_price() ) ?></div>
+      </header>
       <?php for ($i = 0; $i < count($steps); $i++):
         $step = $steps[$i];
         $class = ['customize-popup__step'];
         if ($i === $stepActiveID) {
           $class[] = 'customize-popup__step--active';
         }
-        $options = $step['options'];
+        $options = $step['options'] ?? [];
         $stepTitle = $step['name'];
         $stepSlug = sanitize_title($step['name']);
         $stepID = sanitize_title($step['name']);
@@ -79,33 +85,35 @@ $stepActiveID = 0;
             }         
           else: ?>
             <h3 class="customize-popup__step-title"><?= esc_html($stepTitle) ?></h3>
-            <div class="customize-popup__step-options <?= count($options) >= MAX_OPTIONS_SIZE ? esc_attr('customize-popup__step-options--flex-start') : '' ?>">
-              <?php 
-              $children = [];
-              for ($j = 0; $j < count($options); $j++):
-                $option = $options[$j];
+            <?php if (!empty($options)) : ?>
+              <div class="customize-popup__step-options <?= count($options) >= MAX_OPTIONS_SIZE ? esc_attr('customize-popup__step-options--flex-start') : '' ?>">
+                <?php 
+                $children = [];
+                for ($j = 0; $j < count($options); $j++):
+                  $option = $options[$j];
 
-                $featureImgID = $option['feature_img_id'];
-                $inputName = $stepID;
-                $inputValue = $option['name'];
-                $inputSlug = sanitize_title($inputValue);
-                $inputText = $option['name'];
-                $optionPrice = $option['price'];
-                $optionClass = ['step-option'];
+                  $featureImgID = $option['feature_img_id'];
+                  $inputName = $stepID;
+                  $inputValue = $option['name'];
+                  $inputSlug = sanitize_title($inputValue);
+                  $inputText = $option['name'];
+                  $optionPrice = $option['price'] ?: 0;
+                  $optionClass = ['step-option'];
 
-                $children[$inputSlug] = $option['children'];
-                ?>
-                <label class="<?= esc_attr(implode(' ', $optionClass)) ?>" <?= $stepSlug == FABRIC ? 'is-fabric' : '' ?>>
-                  <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>" <?= $j === 0 ? 'checked' : '' ?> data-slug="<?= esc_attr($inputSlug) ?>">
-                  <span class="step-option__name"><?= esc_html($inputText) ?></span>
-                  <?= wp_get_attachment_image($featureImgID, 'large_medium', false, ['class' => 'step-option__feature-img']) ?>
-                  <div class="step-option__meta">
-                    <span class="step-option__price"><?= $optionPrice ?? '' ?></span>
-                    <span class="step-option__state material-symbols-outlined">check</span>
-                  </div>
-                </label>
-              <?php endfor ?>
-            </div>
+                  $children[$inputSlug] = $option['children'];
+                  ?>
+                  <label class="<?= esc_attr(implode(' ', $optionClass)) ?>" <?= $stepSlug == FABRIC ? 'is-fabric' : '' ?>>
+                    <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>" <?= $j === 0 ? 'checked' : '' ?> data-slug="<?= esc_attr($inputSlug) ?>" data-price="<?= esc_attr($optionPrice) ?>">
+                    <span class="step-option__name"><?= esc_html($inputText) ?></span>
+                    <?= wp_get_attachment_image($featureImgID, 'large_medium', false, ['class' => 'step-option__feature-img']) ?>
+                    <div class="step-option__meta">
+                      <span class="step-option__price"><?= $optionPrice || $optionPrice != 0 ?: '' ?></span>
+                      <span class="step-option__state material-symbols-outlined">check</span>
+                    </div>
+                  </label>
+                <?php endfor ?>
+              </div>
+            <?php endif ?>
             <?php if ( $stepSlug === FABRIC ) : ?>
             <div class="customize-popup__step-details">
               <?php 
