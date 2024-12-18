@@ -41,7 +41,7 @@ class HandleSubmitProjectForm
 
         $added = WC()->cart->add_to_cart($productId, 1, 0, [], array_merge($formData, ['custom_price' => $newPrice]));
         if ($added) {
-            wp_send_json_success();
+            wp_send_json_success(['redirect_url' => wc_get_cart_url()]);
         } else {
             wp_send_json_error('Không thể thêm sản phẩm vào giỏ hàng');
         }

@@ -60,7 +60,7 @@ export default class StepsAndOptionSelection {
       total: parseFloat(this.totalPriceInput.value),
     }, {
       set: (target, key, value) => {
-        if( key === 'base' || key === 'total') {
+        if (key === 'base' || key === 'total') {
           console.error('You can not set base price');
           return false;
         }
@@ -124,14 +124,27 @@ export default class StepsAndOptionSelection {
 
   async handleSubmitForm(event) {
     event.preventDefault();
+
     const formData = new FormData(this.form);
     formData.append('total_price', JSON.stringify(this.totalPrice));
-    const selectedInputs = this.form.querySelectorAll('input:checked');
-    const response = await fetch(this.apiObj.url, {
-      method: 'POST',
-      body: formData,
-    });
-    const data = await response.json();
+
+    try {
+      const response = await fetch(this.apiObj.url, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.href = data.data.redirect_url;
+      } else {
+        alert(data.data || 'Đã xảy ra lỗi, vui lòng thử lại!');
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu:', error);
+      alert('Lỗi kết nối, vui lòng thử lại!');
+    }
   }
 
   handleSelectingOption(event, stepOption) {
@@ -155,10 +168,10 @@ export default class StepsAndOptionSelection {
   calculateAdjustedPrice(optionName, additionalPrice) {
     const isPercentage = additionalPrice.endsWith('%');
     let price = additionalPrice.includes('%') || additionalPrice.includes('$') ? parseFloat(additionalPrice.slice(0, -1)) : parseFloat(additionalPrice);
-    if(isPercentage) {
+    if (isPercentage) {
       price = this.totalPrice.base * (price / 100);
-    } 
-    this.totalPrice.additional = {name: optionName, price};
+    }
+    this.totalPrice.additional = { name: optionName, price };
     console.log(this.totalPrice);
   }
 
@@ -352,7 +365,7 @@ export default class StepsAndOptionSelection {
     };
     const appendElsToParent = (parent, ...children) => {
       children.forEach(child => {
-        if(child instanceof HTMLImageElement && child.src === '') {
+        if (child instanceof HTMLImageElement && child.src === '') {
           return;
         }
         parent.appendChild(child);
@@ -389,28 +402,28 @@ export default class StepsAndOptionSelection {
             appendElsToParent(detailEl, detailLabelEl, detailImgEl);
             itemOptionsWrapperEl.appendChild(detailEl);
 
-            }
           }
-          if(stepKey === 'choose-details') {
-            appendElsToParent(reviewDataItemEl, itemTitleEl, itemOptionsWrapperEl);
-          } else {
-            reviewDataItemEl.appendChild(itemTitleEl);
-            appendElsToParent(itemSelectedOptionEl, selectedOptionLabelEl, selectedOptionImgEl);
-            appendElsToParent(reviewDataItemEl, itemSelectedOptionEl, itemOptionsWrapperEl);
-          }
-          } else {
-          itemTitleEl.textContent = stepSelection.name;
-          selectedOptionLabelEl.textContent = stepSelection.selectedValue;
-          if (stepSelection.imgSrc) {
-            selectedOptionImgEl.src = stepSelection.imgSrc;
-          }
-
+        }
+        if (stepKey === 'choose-details') {
+          appendElsToParent(reviewDataItemEl, itemTitleEl, itemOptionsWrapperEl);
+        } else {
           reviewDataItemEl.appendChild(itemTitleEl);
           appendElsToParent(itemSelectedOptionEl, selectedOptionLabelEl, selectedOptionImgEl);
-          reviewDataItemEl.appendChild(itemSelectedOptionEl);
-          }
+          appendElsToParent(reviewDataItemEl, itemSelectedOptionEl, itemOptionsWrapperEl);
+        }
+      } else {
+        itemTitleEl.textContent = stepSelection.name;
+        selectedOptionLabelEl.textContent = stepSelection.selectedValue;
+        if (stepSelection.imgSrc) {
+          selectedOptionImgEl.src = stepSelection.imgSrc;
+        }
 
-          reviewDataContainer.appendChild(reviewDataItemEl);
+        reviewDataItemEl.appendChild(itemTitleEl);
+        appendElsToParent(itemSelectedOptionEl, selectedOptionLabelEl, selectedOptionImgEl);
+        reviewDataItemEl.appendChild(itemSelectedOptionEl);
+      }
+
+      reviewDataContainer.appendChild(reviewDataItemEl);
     }
   }
 }
