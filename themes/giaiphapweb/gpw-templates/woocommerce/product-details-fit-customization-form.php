@@ -60,7 +60,10 @@ $stepActiveID = 0;
     <div class="customize-popup__detail-step">
       <header class="customize-popup__header">
         <h2 class="customize-popup__product-title"><?= esc_html( $product->get_title() ) ?></h2>
-        <div class="customize-popup__product-price"><?= esc_html( get_woocommerce_currency_symbol() . $product->get_price() ) ?></div>
+        <div class="customize-popup__product-price">
+          <span class="currency-symbol"><?= esc_html(get_woocommerce_currency_symbol()) ?></span>
+          <span class="price"><?= esc_html( $product->get_price() ) ?></span>
+        </div>
       </header>
       <?php for ($i = 0; $i < count($steps); $i++):
         $step = $steps[$i];

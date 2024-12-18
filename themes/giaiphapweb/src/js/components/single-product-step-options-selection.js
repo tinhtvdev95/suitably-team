@@ -53,7 +53,7 @@ export default class StepsAndOptionSelection {
     this.productDetailsCustomTitles = document.querySelectorAll(`.${this.productDetailsCustomOptionTitleSelector}`);
     this.form = document.querySelector('.customize-popup__fit-customization');
     this.totalPriceInput = this.form.querySelector(this.totalPriceInputSelector);
-    this.totalPriceDisplayEl = this.form.querySelector(`.${this.totalPriceDisplaySelector}`);
+    this.totalPriceDisplayEl = this.form.querySelector(`.${this.totalPriceDisplaySelector} .price`);
     this.totalPrice = new Proxy({
       base: parseFloat(this.totalPriceInput.value),
       additional: {},
@@ -80,7 +80,7 @@ export default class StepsAndOptionSelection {
           console.error('Data type is not correct');
           return false;
         }
-        this.totalPriceDisplayEl.textContent = `$${target.total.toFixed(2)}`;
+        this.totalPriceDisplayEl.textContent = target.total.toFixed(2);
         this.totalPriceInput.value = target.total;
         return true;
       },
