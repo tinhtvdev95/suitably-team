@@ -55,12 +55,14 @@ if (!function_exists('render_fit_option_fields')) {
                     for ($i = 0; $i < count($field['option']); $i++):
                         $option = $field['option'][$i];
                         $inputName = $parentName . '-' . sanitize_title($field['name']);
-                        $optionPrice = $option['price'] ?? '';
+                        $optionPrice = $option['price'] ?? 0;
                         ?>
                         <label class="fit-option-fields__item step-option">
                             <input type="radio" name="<?= esc_attr($inputName) ?>" 
                                 value="<?= esc_attr($option['name']) ?>" 
-                                <?= $i === 0 ? esc_attr('checked') : '' ?> data-slug="<?= esc_attr(sanitize_title($option['name'])) ?>">
+                                <?= $i === 0 ? esc_attr('checked') : '' ?> 
+                                data-slug="<?= esc_attr(sanitize_title($option['name'])) ?>"
+                                data-price="<?= esc_attr($optionPrice) ?>">
                             <span class="step-option__name"><?= esc_html($option['name']) ?></span>
                             <?= wp_get_attachment_image($option['feature_img_id'], 'medium', false, ['class' => 'step-option__feature-img']) ?>
                             <div class="step-option__meta">
@@ -90,7 +92,7 @@ if (!isset($render_swiper_slides) && empty($render_swiper_slides)) {
                         <h3 class="fit-option-fields-top__title">
                             <?= esc_html(array_key_exists('name', $fields) ? $fields['name'] : '') ?>
                         </h3>
-                        <p class="fit-option-fields-top__description"><?= esc_html($commonDetails['description']) ?></p>
+                        <p class="fit-option-fields-top__description"><?= esc_html($fields['description']) ?></p>
                     </div>
                     <?php
                     // Render child options if not numeric key
@@ -104,13 +106,15 @@ if (!isset($render_swiper_slides) && empty($render_swiper_slides)) {
                         <div class="<?= esc_attr(implode(' ', $fieldClass)) ?>">
                             <?php for ($i = 0; $i < count($fields['option']); $i++):
                                 $field = $fields['option'][$i];
-                                $optionPrice = $field['price'] ?: '';
+                                $optionPrice = $field['price'] ?: 0;
                                 $relatedCategoryId = $field['related_category'];
                                 $checked = in_array($relatedCategoryId, $categoriesId);
                                 ?>
                                 <label class="fit-option-fields__item step-option">
-                                    <input type="radio" name="<?= esc_attr($inputFieldName) ?>" value="<?= esc_attr($field['name']) ?>"
-                                        <?= $checked ? esc_attr('checked') : '' ?>>
+                                    <input type="radio" name="<?= esc_attr($inputFieldName) ?>" 
+                                    value="<?= esc_attr($field['name']) ?>" <?= $checked ? esc_attr('checked') : '' ?> 
+                                    data-slug="<?= esc_attr(sanitize_title($field['name'])) ?>"
+                                    data-price="<?= esc_attr($optionPrice) ?>">
                                     <span class="step-option__name"><?= esc_html($field['name']) ?></span>
                                     <?= wp_get_attachment_image($field['feature_img_id'], 'medium', false, ['class' => 'step-option__feature-img']) ?>
                                     <div class="step-option__meta">
