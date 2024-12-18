@@ -35,6 +35,7 @@ $stepActiveID = 0;
   <form class="customize-popup__fit-customization fit-customization" method="POST">
     <?php wp_nonce_field('fit_customization', 'fit_customization_nonce') ?>
     <input type="hidden" name="action" value="fit_customization">
+    <input type="hidden" name="product-id" value="<?= $product->id ?>">
     <input type="hidden" name="total_price" value="<?= esc_attr($product->get_price() ?? 0) ?>">
     <aside class="customize-popup__process-step">
       <div class="customize-popup__process-step-inner">

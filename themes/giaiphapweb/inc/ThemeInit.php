@@ -4,6 +4,8 @@
  */
 namespace gpweb\inc;
 
+use gpweb\api\HandleSubmitProjectForm;
+
 class ThemeInit {
   /**
    ** Get the list of services to be registered.
@@ -13,6 +15,7 @@ class ThemeInit {
   public static function get_services() {
     return [
       ChangeLoginPage::class,
+      HandleSubmitProjectForm::class,
       base\Register::class,
     ];
   }

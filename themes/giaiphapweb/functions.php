@@ -16,7 +16,7 @@ if (class_exists('gpweb\\inc\\ThemeInit')) {
 
 $controllerPaths = [
   'controller/product/ProductController.php',
-  'controller/post/PostController.php'
+  'controller/post/PostController.php',
 ];
 
 foreach ($controllerPaths as $path) {
