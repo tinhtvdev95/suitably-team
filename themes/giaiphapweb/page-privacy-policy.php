@@ -3,9 +3,9 @@ get_header();
 $privacyPolicy = get_fields(get_the_ID());
 ob_start();
 ?>
-<section class="privacy-policy">
+<section class="section-privacy-policy">
     <div class="section__inner">
-        <h3 class="privacy-policy__title"><?= $privacyPolicy['title'] ?></h3>
+        <h3 class="section-privacy-policy__title"><?= $privacyPolicy['title'] ?></h3>
         <p><?= $privacyPolicy['description'] ?></p>
         <?php foreach ($privacyPolicy['category'] as $item):
             ?>

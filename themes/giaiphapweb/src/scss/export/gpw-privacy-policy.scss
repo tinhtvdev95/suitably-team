@@ -14,10 +14,10 @@ td {
     padding-left: .5rem !important;
 }
 
-.privacy-policy {
+.section-privacy-policy {
     margin-block: 2rem;
 
-    .privacy-policy__title {
+    &__title {
         text-align: center;
         padding-bottom: 1rem;
         font-size: 2rem;
