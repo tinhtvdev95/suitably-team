@@ -43,6 +43,7 @@ export default class StepsAndOptionSelection {
 
     this.init();
     this.addEventListeners();
+    this.takeMeasurementsSwiper();
   }
 
   init() {
@@ -122,11 +123,25 @@ export default class StepsAndOptionSelection {
     this.form.addEventListener('submit', this.handleSubmitForm.bind(this));
   }
 
+  takeMeasurementsSwiper() {
+    const swiperEl = document.querySelector('.take-measurements__steps-content .swiper');
+    if (!swiperEl) return;
+    const swiper = new Swiper(swiperEl, {
+      slidesPerView: 1,
+      navigation: {
+        nextEl: swiperEl.querySelector('.take-measurements__btn--next'),
+        prevEl: swiperEl.querySelector('.take-measurements__btn--prev'),
+      }
+    });
+  }
+
   async handleSubmitForm(event) {
     event.preventDefault();
 
     const formData = new FormData(this.form);
     formData.append('total_price', JSON.stringify(this.totalPrice));
+    
+    console.log(formData.get('your-pics'));
 
     try {
       const response = await fetch(this.apiObj.url, {
