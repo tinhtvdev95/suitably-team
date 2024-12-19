@@ -62,12 +62,15 @@ class Register extends BaseController
       $this->enqueueStyle('gpw-homepage');
     }
 
-    if( is_product() ) {
+    if (is_product()) {
       $this->enqueueScript('gpw-single-product', null, '', ['swiper']);
       $this->enqueueStyle('gpw-single-product', null, '', ['swiper']);
       wp_localize_script('gpw-single-product', 'apiObj', [
         'url' => admin_url('admin-ajax.php'),
       ]);
+    }
+    if (is_page('privacy-policy')) {
+      $this->enqueueStyle('gpw-privacy-policy', null);
     }
   }
 
