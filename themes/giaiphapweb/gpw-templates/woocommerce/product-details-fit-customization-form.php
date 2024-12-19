@@ -35,7 +35,7 @@ $stepActiveID = 0;
   <form class="customize-popup__fit-customization fit-customization" method="POST">
     <?php wp_nonce_field('fit_customization', 'fit_customization_nonce') ?>
     <input type="hidden" name="action" value="fit_customization">
-    <input type="hidden" name="product-id" value="<?= $product->id ?>">
+    <input type="hidden" name="product-id" value="<?= $product->get_id() ?>">
     <input type="hidden" name="total_price" value="<?= esc_attr($product->get_price() ?? 0) ?>">
     <aside class="customize-popup__process-step">
       <div class="customize-popup__process-step-inner">
@@ -51,6 +51,10 @@ $stepActiveID = 0;
               <a href="javascript:void(0);" data-target="<?= esc_attr($step['slug']) ?>"><?= esc_html($step['name']) ?></a>
             </li>
           <?php endfor; ?>
+          <li class="customize-popup__nav-item customize-popup__nav-item--disabled">
+            <span class="material-symbols-outlined">check_circle</span>
+            <a href="javascript:void(0);" data-target="take-measurements">Take Measurements</a>
+          </li>
           <li class="customize-popup__nav-item customize-popup__nav-item--disabled">
             <span class="material-symbols-outlined">check_circle</span>
             <a href="javascript:void(0);" data-target="confirm">Confirm</a>
@@ -111,7 +115,7 @@ $stepActiveID = 0;
                     <span class="step-option__name"><?= esc_html($inputText) ?></span>
                     <?= wp_get_attachment_image($featureImgID, 'large_medium', false, ['class' => 'step-option__feature-img']) ?>
                     <div class="step-option__meta">
-                      <span class="step-option__price"><?= $optionPrice || $optionPrice != 0 ?: '' ?></span>
+                      <span class="step-option__price"><?= $optionPrice || $optionPrice != 0 ? $optionPrice : '' ?></span>
                       <span class="step-option__state material-symbols-outlined">check</span>
                     </div>
                   </label>
@@ -142,6 +146,13 @@ $stepActiveID = 0;
         </div>
 
       <?php endfor; ?>
+      <div class="customize-popup__step take-measurements" id="take-measurements">
+        <h3 class="customize-popup__step-title">Take Measurements</h3>
+
+          <?php get_template_part('gpw-templates/woocommerce/product-details', 'take-measurements') ?>
+
+        <button type="button" class="customize-popup__step-continue-btn gpw-button gpw-button__gradient" data-option-name="take-measurements">Continue</button>
+      </div>
       <div class="customize-popup__step" id="confirm">
         <h3 class="customize-popup__step-title">Confirm</h3>
         <div class="customize-popup__review-selection"></div>
