@@ -62,7 +62,7 @@ $email = get_field('email', 'company_info');
 		<div class="section__inner">
 			<div class="footer__copyright">
 				<p class="copyright__text">Giaiphapweb © 2024 All Rights Reserved.
-					<a href="javascript:void(0)">Privacy Policy</a>
+					<a href="/privacy-policy/">Privacy Policy</a>
 				</p>
 			</div>
 		</div>
