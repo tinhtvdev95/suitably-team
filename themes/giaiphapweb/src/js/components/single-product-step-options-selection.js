@@ -126,11 +126,74 @@ export default class StepsAndOptionSelection {
   takeMeasurementsSwiper() {
     const swiperEl = document.querySelector('.take-measurements__steps-content .swiper');
     if (!swiperEl) return;
+
+    const validateFieldsInsideStep = stepEl => {
+      let isValid = false;
+      const fieldEls = stepEl.querySelectorAll('.field-group__input');
+      fieldEls.forEach(fieldEl => {
+        if(fieldEl.name === 'age') {
+          
+        } else if(fieldEl.value === '' || isNaN(fieldEl.value)) {
+          fieldEl.classList.add('field-group__input--error');
+          isValid = false;
+        } else {
+          fieldEl.classList.remove('field-group__input--error');
+          isValid = true;
+        }
+      });
+      return isValid;
+    };
+
+    const handleNextButtonClick = swiper => {
+      if(swiper.slides.length > 0) {
+        const currentSlide = swiper.slides[swiper.activeIndex];
+        const isValid = validateFieldsInsideStep(currentSlide);
+        if(isValid) {
+          swiper.allowSlideNext = true;
+          swiper.slideNext();
+          swiper.allowSlideNext = false;
+        }
+      }
+    }
+
     const swiper = new Swiper(swiperEl, {
       slidesPerView: 1,
       navigation: {
         nextEl: swiperEl.querySelector('.take-measurements__btn--next'),
         prevEl: swiperEl.querySelector('.take-measurements__btn--prev'),
+      },
+      hashNavigation: {
+        watchState: true,
+        replaceState: true,
+      },
+      on: {
+        init: function(){
+          if(this.slides.length === 0) {
+            const firstSlide = document.querySelector('.steps-content__item');
+            const isValid = validateFieldsInsideStep(firstSlide);
+            this.allowSlideNext = isValid;
+          }
+        },
+        navigationNext: function() {
+          if(this.slides.length > 0) {
+            const currentSlide = this.slides[this.activeIndex];
+            const isValid = validateFieldsInsideStep(currentSlide);
+            if(isValid) {
+              this.allowSlideNext = true;
+              this.slideNext();
+              this.allowSlideNext = false;
+            } else {
+              this.allowSlideNext = false;
+            }
+          }
+        },
+        slideChange: function() {
+          if(this.slides.length > 0) {
+            document.querySelector('.steps-nav__item--active')?.classList.remove('steps-nav__item--active');
+            const currentHash = this.slides[this.activeIndex].dataset.hash;
+            document.querySelector(`.steps-nav__item[href="#${currentHash}"]`)?.classList.add('steps-nav__item--active');
+          }
+        }
       }
     });
   }
@@ -141,8 +204,6 @@ export default class StepsAndOptionSelection {
     const formData = new FormData(this.form);
     formData.append('total_price', JSON.stringify(this.totalPrice));
     
-    console.log(formData.get('your-pics'));
-
     try {
       const response = await fetch(this.apiObj.url, {
         method: 'POST',

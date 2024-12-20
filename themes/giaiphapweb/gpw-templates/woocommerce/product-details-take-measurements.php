@@ -4,31 +4,30 @@
  * * Template for display product details Take Measurements section.
  */
 $measurementsSteps = get_field('step', 'take_measurements');
-// dump($measurementsSteps);
-foreach( $measurementsSteps as $step ) :
+$stepCounter = 0;
+foreach ($measurementsSteps as $step):
   extract($step);
   $stepSlug = sanitize_title($name);
   ob_start();
   ?>
-    <li class="steps-nav__item">
-      <a href="javascript:void(0);" data-target="<?= esc_attr($stepSlug) ?>"><?= esc_html($name) ?></a>
-    </li>
+  <a class="steps-nav__item<?= $stepCounter == 0 ? ' steps-nav__item--active' : '' ?>" href="#<?= esc_attr($stepSlug) ?>"><?= esc_html($name) ?></a>
   <?php
   $stepNavHtml .= ob_get_clean();
 
   ob_start();
   ?>
 
-  <div class="steps-content__item swiper-slide" id="<?= esc_attr($stepSlug) ?>">
+  <div class="steps-content__item swiper-slide" data-hash="<?= esc_attr($stepSlug) ?>">
     <strong class="steps-content__item-title"><?= esc_html($name) ?></strong>
     <p class="steps-content__item-desc"><?= esc_html($description) ?></p>
-    <div class="steps-content__item-fields">
-      <?php foreach ($input_fields as $field) :
+    <div class="steps-content__item-fields" style="--fields-count: <?= esc_attr(count($input_fields)) ?>;">
+      <?php foreach ($input_fields as $field):
         $fieldName = sanitize_title($field['name']);
-      ?>
+        ?>
         <div class="field-group">
-          <input type="text" name="<?= esc_attr($fieldName) ?>" placeholder="<?= esc_attr($field['name']) ?>" class="field-group__input">
-          <?php if($field['unit'] != 'none') : ?>
+          <input type="text" name="<?= esc_attr($fieldName) ?>" placeholder="<?= esc_attr($field['name']) ?>"
+            class="field-group__input">
+          <?php if ($field['unit'] != 'none'): ?>
             <span class="field-group__unit"><?= esc_html($field['unit']) ?></span>
           <?php endif ?>
         </div>
@@ -38,9 +37,11 @@ foreach( $measurementsSteps as $step ) :
 
   <?php
   $stepContent .= ob_get_clean();
+  $stepCounter++;
 endforeach;
-$stepNavHtml .= '<li class="steps-nav__item"><a href="javascript:void(0);" data-target="your-pics">Your pictures</a></li>';
-$stepContent .= '<div class="steps-content__item swiper-slide" id="your-pics">
+
+$stepNavHtml .= '<a class="steps-nav__item" href="#your-pics">Your pictures</a>';
+$stepContent .= '<div class="steps-content__item swiper-slide" data-hash="your-pics">
   <strong class="steps-content__item-title">Your pictures</strong>
   <p class="steps-content__item-desc">Please upload your pictures for us to better understand your body shape.</p>
   <div class="steps-content__item-fields">
@@ -50,7 +51,7 @@ $stepContent .= '<div class="steps-content__item swiper-slide" id="your-pics">
   </div>
   </div>';
 ?>
-<ul class="take-measurements__steps-nav"><?= $stepNavHtml ?></ul>
+<div class="take-measurements__steps-nav"><?= $stepNavHtml ?></div>
 <div class="take-measurements__steps-content">
   <div class="swiper">
     <div class="swiper-wrapper"><?= $stepContent ?></div>

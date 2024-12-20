@@ -158,7 +158,7 @@
 
     &__prev,
     &__next {
-        background: #c8bba1;
+        background: var(--primary-color-500);
         padding: .5rem;
         color: #fff;
     }
@@ -168,7 +168,7 @@
     }
 
     .swiper-button-disabled {
-        background: #e0d8c7;
+        background: var(--primary-color-100);
     }
 }
 
