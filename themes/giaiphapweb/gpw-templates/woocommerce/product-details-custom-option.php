@@ -83,22 +83,23 @@ if (!isset($render_swiper_slides) && empty($render_swiper_slides)) {
         if (!isset($chooseDetails) && empty($chooseDetails))
             return;
         $fieldName = sanitize_title($commonDetails['name']);
-        foreach ($chooseDetails as $key => $fields):
-            $inputFieldName = $fieldName . '-' . sanitize_title($fields['name']);
-            ?>
+        foreach ($chooseDetails as $key => $fields): ?>
             <div class="swiper-slide">
                 <div class="product-details__fit-option-fields fit-option-fields">
                     <div class="fit-option-fields__top">
                         <h3 class="fit-option-fields-top__title">
                             <?= esc_html(array_key_exists('name', $fields) ? $fields['name'] : '') ?>
                         </h3>
-                        <p class="fit-option-fields-top__description"><?= esc_html($fields['description']) ?></p>
+                        <?php if (array_key_exists('description', $fields)): ?>
+                            <p class="fit-option-fields-top__description"><?= esc_html($fields['description']) ?></p>
+                        <?php endif; ?>
                     </div>
                     <?php
                     // Render child options if not numeric key
                     if (!is_numeric($key)) {
                         render_fit_option_fields($fields, $fieldName);
                     } else {
+                        $inputFieldName = $fieldName . '-' . sanitize_title($fields['name']);
                         $fieldClass = ['fit-option-fields__main', 'customize-popup__step-options'];
                         if (is_array($fields['option']) && count($fields['option']) >= 4) {
                             $fieldClass[] = 'customize-popup__step-options--flex-start';
@@ -108,7 +109,7 @@ if (!isset($render_swiper_slides) && empty($render_swiper_slides)) {
                                 $field = $fields['option'][$i];
                                 $optionPrice = $field['price'] ?: 0;
                                 $relatedCategoryId = $field['related_category'];
-                                $checked = in_array($relatedCategoryId, $categoriesId);
+                                $checked = $relatedCategoryId ? in_array($relatedCategoryId, $categoriesId) : $i === 0;
                                 ?>
                                 <label class="fit-option-fields__item step-option">
                                     <input type="radio" name="<?= esc_attr($inputFieldName) ?>" 
