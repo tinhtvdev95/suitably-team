@@ -20,6 +20,7 @@ class Register extends BaseController
   public function register()
   {
     add_action('wp_enqueue_scripts', [$this, 'enqueue']);
+    add_action('admin_enqueue_scripts', [$this, 'adminEnqueue']);
     // Add AOS init script in the header
     add_action('wp_footer', function () {
       echo '<script> AOS.init(); </script>';
@@ -71,6 +72,23 @@ class Register extends BaseController
     }
     if (is_page('privacy-policy')) {
       $this->enqueueStyle('gpw-privacy-policy', null);
+    }
+  }
+
+
+  /**
+   * Registers admin scripts and styles.
+   */
+  public function adminEnqueue()
+  {
+    // Enqueue script và style cho trang admin
+    $this->enqueueStyle('gpw-admin-footer', null);
+    $this->enqueueScript('gpw-admin-footer', null);
+
+    // Nếu người dùng là quản trị viên, thêm các tài nguyên dành riêng cho admin
+    if (current_user_can('administrator')) {
+      $this->enqueueStyle('gpw-admin-footer', null);
+      $this->enqueueScript('gpw-admin-footer', null);
     }
   }
 

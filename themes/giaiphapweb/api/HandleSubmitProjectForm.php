@@ -11,6 +11,8 @@ class HandleSubmitProjectForm
         add_action('woocommerce_checkout_create_order_line_item', [$this, 'saveCustomDataToOrder'], 10, 4);
         add_action('woocommerce_before_calculate_totals', [$this, 'customize_cart_item_price'], 10, 1);
         add_action('woocommerce_remove_cart_item', [$this, 'deleteUploadedImageOnRemoveCartItem'], 10, 2);
+        add_action('woocommerce_checkout_create_order_line_item', [$this, 'saveUploadedImagesInOrder'], 10, 4);
+        add_action('woocommerce_admin_order_data_after_order_details', [$this, 'displayUploadedImagesInAdminOrder'], 10, 1);
     }
 
     /**
@@ -29,44 +31,42 @@ class HandleSubmitProjectForm
         $productId = $formData['product-id'];
         unset($formData['fit_customization_nonce'], $formData['_wp_http_referer'], $formData['product-id'], $formData['action'], $formData['your-pics']);
 
-        // dd($_FILES['your-pics']);
-
         if (!empty($_FILES['your-pics'])) {
             $uploadedImages = [];
             if (is_array($_FILES['your-pics']['name'])) {
-            foreach ($_FILES['your-pics']['name'] as $key => $value) {
-                if ($_FILES['your-pics']['name'][$key]) {
+                foreach ($_FILES['your-pics']['name'] as $key => $value) {
+                    if ($_FILES['your-pics']['name'][$key]) {
+                        $file = [
+                            'name' => $_FILES['your-pics']['name'][$key],
+                            'type' => $_FILES['your-pics']['type'][$key],
+                            'tmp_name' => $_FILES['your-pics']['tmp_name'][$key],
+                            'error' => $_FILES['your-pics']['error'][$key],
+                            'size' => $_FILES['your-pics']['size'][$key]
+                        ];
+                        $upload = wp_handle_upload($file, ['test_form' => false]);
+                        if (isset($upload['url'])) {
+                            $uploadedImages[] = $upload['url'];
+                        }
+                    }
+                }
+            } else {
                 $file = [
-                    'name'     => $_FILES['your-pics']['name'][$key],
-                    'type'     => $_FILES['your-pics']['type'][$key],
-                    'tmp_name' => $_FILES['your-pics']['tmp_name'][$key],
-                    'error'    => $_FILES['your-pics']['error'][$key],
-                    'size'     => $_FILES['your-pics']['size'][$key]
+                    'name' => $_FILES['your-pics']['name'],
+                    'type' => $_FILES['your-pics']['type'],
+                    'tmp_name' => $_FILES['your-pics']['tmp_name'],
+                    'error' => $_FILES['your-pics']['error'],
+                    'size' => $_FILES['your-pics']['size']
                 ];
                 $upload = wp_handle_upload($file, ['test_form' => false]);
                 if (isset($upload['url'])) {
                     $uploadedImages[] = $upload['url'];
                 }
-                }
-            }
-            } else {
-            $file = [
-                'name'     => $_FILES['your-pics']['name'],
-                'type'     => $_FILES['your-pics']['type'],
-                'tmp_name' => $_FILES['your-pics']['tmp_name'],
-                'error'    => $_FILES['your-pics']['error'],
-                'size'     => $_FILES['your-pics']['size']
-            ];
-            $upload = wp_handle_upload($file, ['test_form' => false]);
-            if (isset($upload['url'])) {
-                $uploadedImages[] = $upload['url'];
-            }
             }
             if (!empty($uploadedImages)) {
-            $formData['your-pics'] = $uploadedImages;
+                $formData['your-pics'] = $uploadedImages;
             }
         }
-        
+
         $totalPrice = json_decode(stripslashes($formData['total_price']), true);
         $additionalFees = isset($totalPrice['additional']) ? $totalPrice['additional'] : [];
 
@@ -81,7 +81,7 @@ class HandleSubmitProjectForm
         if ($added) {
             wp_send_json_success(['redirect_url' => wc_get_cart_url()]);
         } else {
-            wp_send_json_error('Không thể thêm sản phẩm vào giỏ hàng');
+            wp_send_json_error('Can not add product to cart');
         }
     }
 
@@ -103,7 +103,6 @@ class HandleSubmitProjectForm
      */
     public function displayCustomDataInCart($itemData, $cartItem)
     {
-        dump($cartItem);
         $totalPrice = json_decode(stripslashes($cartItem['total_price']), true);
 
         $excludedKeys = ['product_id', 'variation_id', 'variation', 'quantity', 'data', 'line_tax', 'line_total', 'key', 'data_hash', 'line_subtotal', 'line_subtotal_tax', 'custom_price'];
@@ -156,12 +155,39 @@ class HandleSubmitProjectForm
      */
     public function saveCustomDataToOrder($item, $cartItemKey, $values, $order)
     {
-        $excludedKeys = ['product_id', 'variation_id', 'variation', 'quantity', 'data', 'line_tax', 'line_total', 'key', 'data_hash', 'line_subtotal', 'line_subtotal_tax', 'custom_price'];
+        $excludedKeys = ['product_id', 'variation_id', 'variation', 'quantity', 'data', 'line_tax', 'line_total', 'key', 'data_hash', 'line_subtotal', 'line_subtotal_tax', 'custom_price', 'total_price']; // Đã thêm total_price vào đây
 
         if (!empty($values)) {
+            $displayedFields = [];
+
+            // Lấy thông tin giá trị tùy chỉnh từ cart item
+            $totalPrice = json_decode(stripslashes($values['total_price'] ?? ''), true);
+
+            // Nếu có dữ liệu về các khoản phí bổ sung thì thêm vào đơn hàng
+            if (!empty($totalPrice['additional'])) {
+                foreach ($totalPrice['additional'] as $key => $value) {
+                    $valueLabel = ucfirst(str_replace('-', ' ', $key));
+
+                    if (in_array($valueLabel, $displayedFields) || in_array($key, $excludedKeys)) {
+                        continue;
+                    }
+
+                    // Thêm dữ liệu vào đơn hàng, ngoại trừ total_price
+                    if (isset($totalPrice['additional'][$key])) {
+                        $item->add_meta_data($valueLabel, $values[$key] . ' (' . wc_price($totalPrice['additional'][$key]) . ')', true);
+                    } else {
+                        $item->add_meta_data($valueLabel, $values[$key], true);
+                    }
+
+                    $displayedFields[] = $valueLabel;
+                }
+            }
+
+            // Lưu các dữ liệu còn lại (không bao gồm total_price)
             foreach ($values as $key => $value) {
-                if (!in_array($key, $excludedKeys)) {
-                    $item->add_meta_data(ucfirst(str_replace('-', ' ', $key)), $value, true);
+                if (!in_array($key, $excludedKeys) && !in_array(ucfirst(str_replace('-', ' ', $key)), $displayedFields)) {
+                    $item->add_meta_data(ucfirst(str_replace('-', ' ', $key)), wc_clean($value), true);
+                    $displayedFields[] = ucfirst(str_replace('-', ' ', $key));
                 }
             }
         }
@@ -175,19 +201,56 @@ class HandleSubmitProjectForm
      * @param string $cartItemKey The key of the cart item being removed.
      * @param WC_Cart $cart The WooCommerce cart object.
      */
-    public function deleteUploadedImageOnRemoveCartItem($cartItemKey, $cart) {
+    public function deleteUploadedImageOnRemoveCartItem($cartItemKey, $cart)
+    {
         $cartItem = $cart->get_cart_item($cartItemKey);
-        if(isset($cartItem['your-pics'])) {
-            $imgUrl = $cartItem['your-pics'];
+
+        if (isset($cartItem['your-pics'])) {
+            $imgUrls = $cartItem['your-pics'];
+
+            if (!is_array($imgUrls)) {
+                $imgUrls = [$imgUrls];
+            }
+
             $uploadDir = wp_get_upload_dir();
             $baseDir = $uploadDir['basedir'];
             $baseUrl = $uploadDir['baseurl'];
-            if(strpos($imgUrl, $baseUrl) === 0) {
-                $uploadedImagePath = str_replace($baseUrl, $baseDir, $imgUrl);
-                if(file_exists($uploadedImagePath)) {
-                    unlink($uploadedImagePath);
+
+            foreach ($imgUrls as $imgUrl) {
+                if (strpos($imgUrl, $baseUrl) === 0) {
+                    $uploadedImagePath = str_replace($baseUrl, $baseDir, $imgUrl);
+
+                    if (file_exists($uploadedImagePath)) {
+                        unlink($uploadedImagePath);
+                    }
                 }
             }
         }
     }
+
+    public function saveUploadedImagesInOrder($item, $cart_item_key, $values, $order)
+    {
+        if (isset($values['your-pics']) && is_array($values['your-pics'])) {
+            $image_urls = $values['your-pics'];
+            $item->add_meta_data('Uploaded Images', $image_urls);
+        }
+    }
+
+    function displayUploadedImagesInAdminOrder($order)
+    {
+        foreach ($order->get_items() as $item_id => $item) {
+            $image_urls = $item->get_meta('Uploaded Images');
+            if ($image_urls && is_array($image_urls)) {
+                echo '<div style="margin-top: 2rem; display: inline-block">';
+                echo '<p><strong>Image of Customer:</strong></p>';
+                echo '<div style="display: flex; gap: 10px;">';
+                foreach ($image_urls as $image_url) {
+                    echo '<img src="' . esc_url($image_url) . '" alt="Uploaded Image" class="upload-image" style="width: 300px; height: 300px; object-fit: cover; cursor: pointer;">'; // Cung cấp kiểu CSS trực tiếp và thêm class cho hình ảnh
+                }
+                echo '</div>';
+                echo '</div>';
+            }
+        }
+    }
+
 }
