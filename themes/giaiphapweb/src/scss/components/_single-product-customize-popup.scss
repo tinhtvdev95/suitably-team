@@ -273,6 +273,107 @@
     }
   }
 
+  .take-measurements {
+    &__steps-nav {
+      margin-bottom: 1.25rem;
+
+      @include d-flex($align: center, $wrap: wrap, $colGap: .3125rem);
+    }
+
+    .steps-nav__item {
+      line-height: 1;
+      padding: .625rem .9375rem;
+      border: 0.0625rem solid var(--gray-color-100);
+      transition: border-color 300ms, color 300ms, font-weight 300ms;
+
+      &--active {
+        font-weight: 700;
+        color: var(--primary-color-500);
+        border-color: var(--primary-color-500);
+      }
+    }
+
+    &__steps-content {
+      margin-bottom: 1.25rem;
+      
+      .swiper-navigation-buttons {
+        margin-top: 1.25rem;
+
+        @include d-flex($justify: space-between, $align: center);
+      }
+    }
+
+    .steps-content {
+      &__item {
+        background-color: var(--primary-color-50);
+        padding: .9375rem 1.25rem 1.25rem;
+
+        &-title {
+          display: inline-block;
+          font-size: 1.125rem;
+          margin-bottom: .5em;
+          width: 100%;
+        }
+
+        &-title, &-desc {
+          text-align: center;
+          text-wrap: pretty;
+        }
+
+        &-fields {
+          --fields-gap: .625rem;
+          display: grid;
+          grid-template-columns: repeat(var(--fields-count, 1), 1fr);
+          gap: var(--fields-gap);
+          justify-items: center;
+
+          @include container-query(detail-step, sm) {
+            grid-template-columns: 1fr;
+          }
+
+          .field-group {
+            position: relative;
+
+            &__input {
+              margin: 0;
+
+              &:not([type="file"], [type="radio"]) {
+                padding-right: 1.875rem;
+              }
+
+              &--error {
+                border-color: var(--danger-color-500);
+              }
+            }
+
+            &__unit {
+              position: absolute;
+              top: 50%;
+              right: .625rem;
+              transform: translateY(-50%);
+            }
+          }
+        }
+      }
+    }
+
+    &__btn {
+      min-height: auto;
+      margin: 0;
+      padding: .5rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      font-weight: 400;
+      color: #fff;
+      background-color: var(--primary-color-500);
+      transition: background-color 300ms;
+
+      &.swiper-button-disabled {
+        background-color: var(--primary-color-200);
+      }
+    }
+  }
+
   @include container-query(content, md, gt) {
     max-width: var(--pc-max-width);
   }
