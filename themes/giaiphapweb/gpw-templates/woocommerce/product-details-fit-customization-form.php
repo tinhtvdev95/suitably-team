@@ -13,6 +13,7 @@ global $product;
 
 const FABRIC = 'choose-fabric';
 const DETAIL = 'choose-details';
+const PREMIUM_OPTIONS = 'premium-options';
 const MAX_OPTIONS_SIZE = 4;
 
 $categoriesProductName = $productController->getCategoriesOfProduct($product);
@@ -110,7 +111,7 @@ $stepActiveID = 0;
 
                   $children[$inputSlug] = $option['children'];
                   ?>
-                  <label class="<?= esc_attr(implode(' ', $optionClass)) ?>" <?= $stepSlug == FABRIC ? 'is-fabric' : '' ?>>
+                  <label class="<?= esc_attr(implode(' ', $optionClass)) ?>" <?= $stepSlug == FABRIC || $stepSlug == PREMIUM_OPTIONS ? 'is-fabric' : '' ?>>
                     <input type="radio" name="<?= esc_attr($inputName) ?>" value="<?= esc_attr($inputValue) ?>" <?= $j === 0 ? 'checked' : '' ?> data-slug="<?= esc_attr($inputSlug) ?>" data-price="<?= esc_attr($optionPrice) ?>">
                     <span class="step-option__name"><?= esc_html($inputText) ?></span>
                     <?= wp_get_attachment_image($featureImgID, 'large_medium', false, ['class' => 'step-option__feature-img']) ?>
@@ -122,24 +123,43 @@ $stepActiveID = 0;
                 <?php endfor ?>
               </div>
             <?php endif ?>
-            <?php if ( $stepSlug === FABRIC ) : ?>
-            <div class="customize-popup__step-details">
-              <?php 
-              $fabricIndex = 0; 
-              foreach( $children as $key => $child ) {
-                $args = [
-                  'isActive' => $fabricIndex++ === 0,
-                  'options' => $child,
-                  'parentSlug' => $key
-                ];
-                get_template_part(
-                  'gpw-templates/woocommerce/product-details',
-                  'fabric-options',
-                  $args
-                );
-              } ?>
-            </div>
+            <?php if ( $stepSlug === FABRIC) : ?>
+              <div class="customize-popup__step-details">
+                <?php 
+                $premiumIndex = 0; 
+                foreach( $children as $key => $child ) {
+                  $args = [
+                    'isActive' => $premiumIndex++ === 0,
+                    'options' => $child,
+                    'parentSlug' => $key
+                  ];
+                  get_template_part(
+                    'gpw-templates/woocommerce/product-details',
+                    'fabric-options',
+                    $args
+                  );
+                } ?>
+              </div>
             <?php endif ?>
+            <?php if ( $stepSlug === PREMIUM_OPTIONS) : ?>
+              <div class="customize-popup__step-details">
+                <?php 
+                $premiumIndex = 0; 
+                foreach( $children as $key => $child ) {
+                  $args = [
+                    'isActive' => $premiumIndex++ === 0,
+                    'options' => $child,
+                    'parentSlug' => $key
+                  ];
+                  get_template_part(
+                    'gpw-templates/woocommerce/product-details',
+                    'premium-options',
+                    $args
+                  );
+                } ?>
+              </div>
+            <?php endif ?>
+            
           <?php endif ?>
           <button type="button" class="customize-popup__step-continue-btn gpw-button gpw-button__gradient"
             data-option-name="<?= esc_attr($stepID) ?>">Continue</button>

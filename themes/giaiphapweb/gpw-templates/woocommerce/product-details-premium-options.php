@@ -1,10 +1,10 @@
 <?php
 /**
- * @package GiapPhapWeb_Theme
- * * Template for display Fabric Options.
+ * @package GiaiPhapWeb_Theme
+ * * Template for display product details Premium Options.
  */
 
-$isActive = $args['isActive'] ?? false;
+ $isActive = $args['isActive'] ?? false;
 $options = $args['options'] ?? [];
 $parentSlug = $args['parentSlug'] ?? '';
 if (!$options || empty($options))
@@ -30,7 +30,7 @@ if($isActive) {
     $price = $option['price'] ?: 0;
     ?>
     <label class="step-option">
-      <input type="radio" name="color-and-style" value="<?= esc_attr($name) ?>"
+      <input type="radio" name="<?= esc_attr($parentSlug) ?>" value="<?= esc_attr($name) ?>"
         data-slug="<?= esc_attr($slug) ?>" data-price="<?= esc_attr($price) ?>">
       <span class="step-option__name"><?= esc_html($name) ?></span>
       <?= wp_get_attachment_image($imgID, 'large_medium', false, ['class' => 'step-option__feature-img']) ?>

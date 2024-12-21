@@ -5,6 +5,8 @@
  */
 $measurementsSteps = get_field('step', 'take_measurements');
 $stepCounter = 0;
+$stepNavHtml = '';
+$stepContent = '';
 foreach ($measurementsSteps as $step):
   extract($step);
   $stepSlug = sanitize_title($name);

@@ -144,17 +144,38 @@ export default class StepsAndOptionSelection {
       return isValid;
     };
 
-    const handleNextButtonClick = swiper => {
-      if(swiper.slides.length > 0) {
-        const currentSlide = swiper.slides[swiper.activeIndex];
-        const isValid = validateFieldsInsideStep(currentSlide);
-        if(isValid) {
-          swiper.allowSlideNext = true;
-          swiper.slideNext();
-          swiper.allowSlideNext = false;
-        }
-      }
-    }
+    // const handleNextButtonClick = (swiper, nextBtn, prevBtn) => {
+    //   if(swiper.slides.length > 0) {
+    //     const currentSlide = swiper.slides[swiper.activeIndex];
+    //     const isValid = validateFieldsInsideStep(currentSlide);
+    //     if(isValid) {
+    //       swiper.allowSlideNext = true;
+    //       swiper.slideNext();
+    //       swiper.allowSlideNext = false;
+    //       if(swiper.activeIndex > 0) {
+    //         prevBtn.classList.remove('swiper-button-disabled');
+    //       }
+    //       if(swiper.activeIndex === swiper.slides.length - 1) {
+    //         nextBtn.classList.add('swiper-button-disabled');
+    //       }
+    //     }
+
+    //   }
+    // }
+
+    // const handlePrevButtonClick = (swiper, nextBtn, prevBtn) => {
+    //   const prevSlideIndex = swiper.activeIndex - 1;
+    //   if(prevSlideIndex >= 0) {
+    //     swiper.slidePrev();
+    //     swiper.allowSlideNext = true;
+    //   }
+    //   if(prevSlideIndex === 0){
+    //     prevBtn.classList.add('swiper-button-disabled');
+    //   } 
+    //   if(prevSlideIndex < swiper.slides.length - 1) {
+    //     nextBtn.classList.remove('swiper-button-disabled');
+    //   }
+    // }
 
     const swiper = new Swiper(swiperEl, {
       slidesPerView: 1,
@@ -168,11 +189,18 @@ export default class StepsAndOptionSelection {
       },
       on: {
         init: function(){
-          if(this.slides.length === 0) {
-            const firstSlide = document.querySelector('.steps-content__item');
-            const isValid = validateFieldsInsideStep(firstSlide);
-            this.allowSlideNext = isValid;
-          }
+          this.allowSlideNext = false;
+          // const nextBtn = swiperEl.querySelector('.take-measurements__btn--next');
+          // const prevBtn = swiperEl.querySelector('.take-measurements__btn--prev');
+          // prevBtn.classList.add('swiper-button-disabled');
+          // nextBtn.addEventListener('click', (event) => {
+          //   event.preventDefault();
+          //   handleNextButtonClick(this, nextBtn, prevBtn);
+          // });
+          // prevBtn.addEventListener('click', (event) => {
+          //   event.preventDefault();
+          //   handlePrevButtonClick(this, nextBtn, prevBtn);
+          // });
         },
         navigationNext: function() {
           if(this.slides.length > 0) {
@@ -248,7 +276,6 @@ export default class StepsAndOptionSelection {
       price = this.totalPrice.base * (price / 100);
     }
     this.totalPrice.additional = { name: optionName, price };
-    console.log(this.totalPrice);
   }
 
   handleFabricTypeSelection(event, stepOption) {
@@ -258,8 +285,9 @@ export default class StepsAndOptionSelection {
     }
     const input = stepOption.querySelector('input');
     const target = input.dataset.slug;
-    document.querySelector('.fabric-options--active')?.classList.remove('fabric-options--active');
-    document.querySelector(`#${target}`).classList.add('fabric-options--active');
+    const stepDetails = stepOption.parentElement.nextElementSibling;  
+    stepDetails.querySelector('.fabric-options--active')?.classList.remove('fabric-options--active');
+    stepDetails.querySelector(`#${target}`).classList.add('fabric-options--active');
   }
 
   handleContinueStep(event, stepContent) {
@@ -294,7 +322,9 @@ export default class StepsAndOptionSelection {
           this.addDataToFormData(optionName, detailTitle, option.value, option.dataset.slug, optionPrice, optionImgSrc, 'choose-details', stepTitle);
         } else if (currentStepName === 'choose-fabric' && optionName === 'color-and-style') {
           this.addDataToFormData(optionName, stepTitle, option.value, option.dataset.slug, optionPrice, optionImgSrc, 'choose-fabric', stepTitle);
-        } else {
+        } else if (currentStepName === 'premium-options' && (optionName === 'fancy-buttons' || optionName === 'custom-lining')) {
+          this.addDataToFormData(optionName, stepTitle, option.value, option.dataset.slug, optionPrice, optionImgSrc, 'premium-options', stepTitle);
+        }else {
           this.addDataToFormData(optionName, stepTitle, option.value, option.dataset.slug, optionPrice, optionImgSrc);
         }
       }
@@ -457,9 +487,9 @@ export default class StepsAndOptionSelection {
       const selectedOptionImgEl = createElementWithClass('img', ['review-selection__step-img', 'step-option__feature-img']);
       const selectedOptionLabelEl = createElementWithClass('span', ['review-selection__step-label', 'step-option__name']);
 
-      if (stepKey === 'choose-details' || stepKey === 'choose-fabric') {
+      if (stepKey === 'choose-details' || stepKey === 'choose-fabric' || stepKey === 'premium-options') {
         itemTitleEl.textContent = stepSelection.name;
-        if (stepKey === 'choose-fabric' && selectedOptionLabelEl) {
+        if ((stepKey === 'choose-fabric' || stepKey === 'premium-options') && selectedOptionLabelEl) {
           selectedOptionLabelEl.textContent = stepSelection.selectedValue;
           selectedOptionImgEl.src = stepSelection.imgSrc;
         }
